@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36203.30 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task_management_app_backend", "task_management_app_backend\task_management_app_backend.csproj", "{5BC21C5E-C6D8-42A1-9981-924DD8448D13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task_management_app_backend.api", "task_management_app_backend\task_management_app_backend.api.csproj", "{5BC21C5E-C6D8-42A1-9981-924DD8448D13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task_management_app_backend.data", "task_management_app_backend.data\task_management_app_backend.data.csproj", "{496F251A-1437-4204-BA78-B9BF6A6B6D0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task_management_app_backend.resources", "task_management_app_backend.resources\task_management_app_backend.resources.csproj", "{EED5F4A7-5BFE-4E92-ADC7-42B3455A2CD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task_management_app_backend.services", "task_management_app_backend.services\task_management_app_backend.services.csproj", "{53936E62-50AD-4D17-9C63-576F82C92DF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{5BC21C5E-C6D8-42A1-9981-924DD8448D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BC21C5E-C6D8-42A1-9981-924DD8448D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BC21C5E-C6D8-42A1-9981-924DD8448D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{496F251A-1437-4204-BA78-B9BF6A6B6D0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{496F251A-1437-4204-BA78-B9BF6A6B6D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{496F251A-1437-4204-BA78-B9BF6A6B6D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{496F251A-1437-4204-BA78-B9BF6A6B6D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EED5F4A7-5BFE-4E92-ADC7-42B3455A2CD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EED5F4A7-5BFE-4E92-ADC7-42B3455A2CD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EED5F4A7-5BFE-4E92-ADC7-42B3455A2CD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EED5F4A7-5BFE-4E92-ADC7-42B3455A2CD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53936E62-50AD-4D17-9C63-576F82C92DF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53936E62-50AD-4D17-9C63-576F82C92DF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53936E62-50AD-4D17-9C63-576F82C92DF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53936E62-50AD-4D17-9C63-576F82C92DF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
