@@ -1,17 +1,16 @@
-﻿using System;
-using task_management_app_backend.data.Entities;
-using task_management_app_backend.resources.Dtos.RequestDto;
+﻿using task_management_app_backend.data.Entities;
+using System;
 
 namespace task_management_app_backend.data.IRepository
 {
     public interface IEmployeeRepository
     {
-        public Employee AddEmployee(CreateEmployeeDto employeeDto);
+        Employee AddEmployee(Employee employee); // Removed CreateEmployeeDto
 
-        public List<Employee> GetAll();
+        List<Employee> GetAll();
 
-        public Employee Update(Employee employee);
+        Employee Update(Employee employee);
 
-        public Employee GetElementById(Guid id);
+        Employee GetElementById(Guid id);
     }
 }

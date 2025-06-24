@@ -1,12 +1,12 @@
-﻿using task_management_app_backend.resources.Dtos.RequestDto;
+﻿using task_management_app_backend.data.Entities;
 
 namespace task_management_app_backend.data.IRepository
 {
     public interface IProjectRepository
     {
-        public Project Add(CreateProjectDto projectDto);
-        public List<Project> GetAll();
-        public Project Update(Project project);
-        public Project GetProjectById(Guid id);
+        Project Add(Project project);
+        List<Project> GetAll();
+        Project Update(Project project);
+        Project GetProjectById(Guid id);
     }
 }
