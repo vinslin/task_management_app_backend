@@ -17,8 +17,8 @@ namespace task_management_app_backend.data.Entities
         public int IsCompleted { get; set; } = 0;
 
         public ICollection<TaskRelatedProject> TaskProjects { get; set; } = new List<TaskRelatedProject>();
-        public ICollection<UserReleatedTask> 
-            UserTasks { get; set; } = new List<UserReleatedTask>();
+        
+        public ICollection<UserReleatedTask> UserTasks { get; set; } = new List<UserReleatedTask>();
 
         public void SetUpdated() => UpdatedAt = DateTime.UtcNow;
         public void SetCreated() => CreatedAt = DateTime.UtcNow;

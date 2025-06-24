@@ -21,9 +21,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Repositories
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskRelatedProjectRepository, TaskRelatedProjectRepository>();
+builder.Services.AddScoped<IUserRelatedTaskRepository, UserRelatedTaskRepository>();
+
 // Register Services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
 
