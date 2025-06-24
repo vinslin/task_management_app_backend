@@ -1,17 +1,28 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.api.Middleware;
+
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.data.Repository;
-using task_management_app_backend.api.Middleware;
 using task_management_app_backend.services.IServices;
 using task_management_app_backend.services.Services;
+using task_management_app_backend.resources.Dtos.RequestDto;
+using task_management_app_backend.resources.Dtos.Validators;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(config =>
+    {
+        config.RegisterValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>();
+    });
+
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

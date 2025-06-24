@@ -28,14 +28,14 @@ namespace task_management_app_backend.api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEmployee(CreateEmployeeDto dto)
+        public async Task<IActionResult> AddEmployee([FromBody] CreateEmployeeDto dto)
         {
             var result = _employeeService.AddEmployeeAsync(dto);
             return Ok(result);
         }
 
         [HttpPut("UpdateEmployee/{id:guid}")]
-        public async Task<IActionResult> UpdateEmployee(Guid id, CreateEmployeeDto dto)
+        public async Task<IActionResult> UpdateEmployee(Guid id, [FromBody] CreateEmployeeDto dto)
         {
             var result = _employeeService.UpdateEmployee(id, dto);
             return Ok(result);

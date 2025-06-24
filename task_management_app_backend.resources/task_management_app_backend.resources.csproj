@@ -10,4 +10,8 @@
     <Folder Include="Dtos\MiddleDto\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+  </ItemGroup>
+
 </Project>
