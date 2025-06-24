@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using task_management_app_backend.api.Middleware;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.data.Repository;
+using task_management_app_backend.api.Middleware;
 using task_management_app_backend.services.IServices;
 using task_management_app_backend.services.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
