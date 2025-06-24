@@ -58,6 +58,7 @@ namespace task_management_app_backend.services.Services
 
             return new ResponseCreateTaskDto
             {
+                TaskId = newtask.ID,
                 Title = newtask.Title,
                 Description = newtask.Description,
                 DaysForCompletion = dto.DaysForCompletion,
@@ -68,6 +69,94 @@ namespace task_management_app_backend.services.Services
             };
            
         }
+
+        public List<ResponseCreateTaskDto> GetAllTasks() { 
+            var tasks = _taskRepository.GetAll();
+            var responseTasks = new List<ResponseCreateTaskDto>();
+            foreach (var task in tasks)
+            {
+                responseTasks.Add(new ResponseCreateTaskDto
+                {
+                    TaskId = task.ID,
+                    Title = task.Title,
+                    Description = task.Description,
+                    DaysForCompletion = (int)(task.DueDate - DateTime.UtcNow).TotalDays,
+                    DueDate = task.DueDate,
+                    Priority = task.Priority,
+                    ProjectId= task.TaskProjects.FirstOrDefault()?.ProjectId ?? Guid.Empty,
+                    EmployeeId = task.UserTasks.FirstOrDefault()?.EmployeeId ?? Guid.Empty,
+                    IsCompleted = task.IsCompleted 
+                });
+            }
+
+            return responseTasks;
+
+        }
+
+        public data.Entities.Task CompleteTask(Guid id)
+        {
+            var task = _taskRepository.GetElementById(id);
+            if (task == null)
+            {
+                throw new Exception("Task not found");
+            }
+            task.IsCompleted = 1;
+            return _taskRepository.Update(task);
+        }
+
+        public List<ResponseCreateTaskDto> GetCompletedTasks(int n)
+        {
+            var tasks = _taskRepository.GetAll();
+            var responseTasks = new List<ResponseCreateTaskDto>();
+            foreach (var task in tasks)
+            {
+                if (task.IsCompleted == n)
+                {
+                    responseTasks.Add(new ResponseCreateTaskDto
+                    {
+                        TaskId = task.ID,
+                        Title = task.Title,
+                        Description = task.Description,
+                        DaysForCompletion = (int)(task.DueDate - DateTime.UtcNow).TotalDays,
+                        DueDate = task.DueDate,
+                        Priority = task.Priority,
+                        ProjectId = task.TaskProjects.FirstOrDefault()?.ProjectId ?? Guid.Empty,
+                        EmployeeId = task.UserTasks.FirstOrDefault()?.EmployeeId ?? Guid.Empty,
+                        IsCompleted = task.IsCompleted
+                    });
+                }
+            }
+
+            return responseTasks;
+        }
+
+        public List<ResponseCreateTaskDto> GetTasksDueThisWeek()
+        {
+            var today = DateTime.UtcNow.Date;
+            var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek); // Sunday is 0, Saturday is 6
+
+            // Load all tasks with related data
+            var tasks = _taskRepository.GetAll()
+                .Where(t => t.DueDate.Date >= today && t.DueDate.Date <= endOfWeek 
+                        && t.IsCompleted != 1)
+                .ToList();
+
+            var responseTasks = tasks.Select(task => new ResponseCreateTaskDto
+            {
+                TaskId = task.ID,
+                Title = task.Title,
+                Description = task.Description,
+                DaysForCompletion = (int)(task.DueDate - DateTime.UtcNow).TotalDays,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                ProjectId = task.TaskProjects.FirstOrDefault()?.ProjectId ?? Guid.Empty,
+                EmployeeId = task.UserTasks.FirstOrDefault()?.EmployeeId ?? Guid.Empty,
+                IsCompleted = task.IsCompleted
+            }).ToList();
+
+            return responseTasks;
+        }
+
 
 
 

@@ -37,7 +37,19 @@ namespace task_management_app_backend.api.Controllers
         [HttpPut("UpdateEmployee/{id:guid}")]
         public async Task<IActionResult> UpdateEmployee(Guid id, CreateEmployeeDto dto)
         {
-            var result =  _employeeService.UpdateEmployee(id, dto);
+            var result = _employeeService.UpdateEmployee(id, dto);
+            return Ok(result);
+
+        }
+
+        [HttpGet("GetEmployeeTasks/{id:guid}")]
+        public async Task<IActionResult> GetEmployeeTasks(Guid id)
+        {
+            var result = _employeeService.GetEmployeeTasks(id);
+            if (result == null)
+            {
+                return NotFound($"No tasks found for employee with ID {id}.");
+            }
             return Ok(result);
 
         }

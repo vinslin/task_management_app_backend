@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.IRepository;
@@ -30,12 +31,18 @@ namespace task_management_app_backend.data.Repository
         }
         public List<Entities.Task> GetAll()
         {
-            return _context.Tasks.ToList();
+            return _context.Tasks
+                .Include(t => t.TaskProjects)
+                    .ThenInclude(tp => tp.Project)
+                .Include(t => t.UserTasks)
+                    .ThenInclude(ut => ut.Employee)
+                .ToList();
         }
+
         public Entities.Task Update(Entities.Task task)
         {
             var result = _context.Tasks.Update(task);
-
+            _context.SaveChanges();
             return result.Entity;
         }
         public Entities.Task GetElementById(Guid id)
