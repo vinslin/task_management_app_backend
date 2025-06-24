@@ -1,9 +1,10 @@
 ﻿
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.Entities;
-using task_management_app_backend.resources.Dtos.RequestDto;
-using task_management_app_backend.services.IServices;
 using task_management_app_backend.data.IRepository;
+using task_management_app_backend.resources.Dtos.RequestDto;
+using task_management_app_backend.resources.Dtos.ResponseDto;
+using task_management_app_backend.services.IServices;
 
 
 namespace task_management_app_backend.services.Services
@@ -43,6 +44,27 @@ namespace task_management_app_backend.services.Services
 
                 return _employeeRepository.Update(employee);
         }
+
+        public List<ResponseCreateTaskDto> GetEmployeeTasks(Guid id)
+        {
+            var employee = _employeeRepository.GetElementById(id);
+            if (employee == null)
+            {
+                throw new KeyNotFoundException($"Employee with ID {id} not found.");
+            }
+
+            return employee.UserTasks.Select(ut => new ResponseCreateTaskDto
+            {
+               
+                TaskId = ut.Task.ID,
+                Title = ut.Task.Title,
+                Description = ut.Task.Description,
+                Priority = ut.Task.Priority,
+                DueDate = ut.Task.DueDate,
+                EmployeeId = id,
+            }).ToList();
+        }
+
 
     }
 }

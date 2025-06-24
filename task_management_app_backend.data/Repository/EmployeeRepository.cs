@@ -45,10 +45,13 @@ namespace task_management_app_backend.data.Repository
                
             return result.Entity;
         }
-        public Employee GetElementById(Guid id) { 
-               var employee = _context.Employees
+        public Employee GetElementById(Guid id)
+        {
+            return _context.Employees
+                .Include(e => e.UserTasks)
+                    .ThenInclude(ut => ut.Task)
                 .FirstOrDefault(e => e.ID == id);
-            return employee;
         }
+
     }
 }

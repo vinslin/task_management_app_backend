@@ -25,6 +25,52 @@ namespace task_management_app_backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetAllTasks")]
+
+        public async Task<IActionResult> GetAllTasks()
+        {
+            var result = _taskService.GetAllTasks();
+            return Ok(result);
+        }
+        [HttpGet("GetCompletedTasks")]
+        public async Task<IActionResult> GetCompletedTasks()
+        {
+            var result = _taskService.GetCompletedTasks(1);
+            return Ok(result);
+        }
+
+        [HttpGet("GetInmpletedTasks")]
+        public async Task<IActionResult> GetInCompletedTasks()
+        {
+            var result = _taskService.GetCompletedTasks(0);
+            return Ok(result);
+        }
+
+
+        [HttpPatch("Complete_Tasks/{id:Guid}")]
+
+        public async Task<IActionResult> CompleteTask(Guid id)
+        {
+            var result = _taskService.CompleteTask(id);
+            if (result == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("TaskDueThisWeek")]
+
+        public async Task<IActionResult> DueThisWeek()
+        {
+                var result = _taskService.GetTasksDueThisWeek();
+                if (result == null || !result.Any())
+                {
+                    return NotFound("No tasks due this week.");
+                }
+                return Ok(result);
+        }
+
 
     }
 }
