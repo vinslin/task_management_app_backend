@@ -1,7 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.api.Middleware;
-
+using AutoMapper;
+using task_management_app_backend.resources.Mapper;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.data.Repository;
@@ -13,7 +14,7 @@ using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container.x
 
 builder.Services.AddControllers()
     .AddFluentValidation(config =>
@@ -41,6 +42,9 @@ builder.Services.AddScoped<IUserRelatedTaskRepository, UserRelatedTaskRepository
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
 
 var app = builder.Build();
 
