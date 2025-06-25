@@ -1,9 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.IRepository;
-using task_management_app_backend.resources.Dtos.RequestDto;
 
 namespace task_management_app_backend.data.Repository
 {
@@ -16,18 +14,10 @@ namespace task_management_app_backend.data.Repository
             _context = context;
         }
 
-        public Employee AddEmployee(CreateEmployeeDto employeeDto)
+        public Employee AddEmployee(Employee employee)
         {
-
-            var employee = new Employee
-            {
-                ID = Guid.NewGuid(),
-                Name = employeeDto.UserName,
-                Email = employeeDto.Email,
-                Role = employeeDto.Role,
-                CreatedAt = DateTime.UtcNow,
-
-            };
+            employee.ID = Guid.NewGuid();
+            employee.CreatedAt = DateTime.UtcNow;
 
             _context.Employees.Add(employee);
             _context.SaveChanges();
@@ -40,11 +30,13 @@ namespace task_management_app_backend.data.Repository
             return _context.Employees.ToList();
         }
 
-        public Employee Update(Employee employee) {
-           var result= _context.Employees.Update(employee);
-               
+        public Employee Update(Employee employee)
+        {
+            var result = _context.Employees.Update(employee);
+            _context.SaveChanges();
             return result.Entity;
         }
+
         public Employee GetElementById(Guid id)
         {
             return _context.Employees
@@ -52,6 +44,5 @@ namespace task_management_app_backend.data.Repository
                     .ThenInclude(ut => ut.Task)
                 .FirstOrDefault(e => e.ID == id);
         }
-
     }
 }
