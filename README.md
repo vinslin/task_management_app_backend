@@ -24,25 +24,6 @@ This project showcases scalable backend engineering with clean separation of con
 - Business logic and handler coordination lives in `/services/CQRS`
 - DTOs, Validators, and Mapping live in the `/resources` folder
 
----
-
-## 🗂️ Project Structure
-
-📁 task_management_app_backend
-├── Controllers/ # API entry points (v1 and v2)
-├── Middleware/ # Custom exception handling
-├── data/
-│ ├── Data/ # ApplicationDbContext
-│ └── Repository/ # Repo interfaces and implementations (V1)
-├── services/
-│ ├── IServices/ # Abstractions
-│ └── CQRS/ # Command / Query Handlers (V2)
-├── resources/
-│ ├── Dtos/ # Request / Response / Middle DTOs
-│ ├── Validators/ # FluentValidation
-│ ├── Mapper/ # AutoMapper Profiles
-│ └── StoredProcedures/ # .sql scripts for DB ops
-└── Program.cs # Application startup and DI
 
 
 ---
@@ -51,7 +32,7 @@ This project showcases scalable backend engineering with clean separation of con
 
 | Concept             | Details                                           |
 |---------------------|---------------------------------------------------|
-| **CQRS**            | Separate read and write models (via MediatR)      |
+| **CQRS  (V2) **     | Separate read and write models (via MediatR)      |
 | **MediatR**         | Decouples request handling from controllers       |
 | **Stored Procedures** | Used instead of EF queries for DB performance  |
 | **FluentValidation** | Strong input validation layer                    |
@@ -85,8 +66,15 @@ Client → V2 Controller → MediatR (via Handler) → Service → Stored Proced
 
 
 ![image](https://github.com/user-attachments/assets/3aa6fd46-c1a9-4590-99b3-f9d3efeeebad)
-![image](https://github.com/user-attachments/assets/81cdd086-1773-4a69-b841-b832d9e361d0)
 
+
+
+
+
+
+                                Stored Procedures
+![image](https://github.com/user-attachments/assets/81cdd086-1773-4a69-b841-b832d9e361d0)
+Stored Procedures
 ---
 
 
