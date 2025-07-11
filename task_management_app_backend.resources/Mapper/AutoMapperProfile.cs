@@ -14,7 +14,17 @@ namespace task_management_app_backend.resources.Mapper
     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserName));
 
             CreateMap<task_management_app_backend.data.Entities.Task, ResponseCreateTaskDto>()
-                .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.ID));
+                .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.ID))
+                .ForMember(dest => dest.ProjectId, opt => opt.MapFrom(src =>
+                    src.TaskProjects.FirstOrDefault() != null ? src.TaskProjects.First().ProjectId : Guid.Empty))
+                .ForMember(dest => dest.ProjectName, opt => opt.MapFrom(src =>
+                    src.TaskProjects.FirstOrDefault() != null ? src.TaskProjects.First().Project.Name : string.Empty))
+                .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src =>
+                    src.UserTasks.FirstOrDefault() != null ? src.UserTasks.First().EmployeeId : Guid.Empty))
+                .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src =>
+                    src.UserTasks.FirstOrDefault() != null ? src.UserTasks.First().Employee.Name : string.Empty));
+
+            CreateMap<CreateTaskDto, task_management_app_backend.data.Entities.Task>();
             // Project mapping
             CreateMap<CreateProjectDto, Project>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProjectName))

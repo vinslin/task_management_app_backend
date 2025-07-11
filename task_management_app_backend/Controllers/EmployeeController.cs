@@ -65,5 +65,13 @@ namespace task_management_app_backend.api.Controllers
             return Ok(result);
 
         }
+        [HttpGet("Getemployeeforscroller")]
+        public async Task<IActionResult> GetEmployeeForScrollBar()
+        {
+             
+     
+            return Ok(_employeeService.getEmployeeScroll());
+
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using task_management_app_backend.resources.Dtos.RequestDto;
+using task_management_app_backend.resources.Dtos.ResponseDto;
 
 namespace task_management_app_backend.services.IServices
 {
@@ -17,6 +18,7 @@ namespace task_management_app_backend.services.IServices
 
         public bool deleteProject(Guid id);
 
+        public List<getProjectsScrollbarDto> getProjectScroll();
 
 
     }

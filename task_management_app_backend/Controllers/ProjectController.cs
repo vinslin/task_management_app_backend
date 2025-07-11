@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.services.IServices;
+using task_management_app_backend.services.Services;
 
 namespace task_management_app_backend.api.Controllers
 {
@@ -46,6 +47,14 @@ namespace task_management_app_backend.api.Controllers
         {
             var result = _projectService.deleteProject(id);
             return Ok(result);
+
+        }
+        [HttpGet("Getprojectforscroller")]
+        public async Task<IActionResult> GetProjectForScrollBar()
+        {
+
+
+            return Ok(_projectService.getProjectScroll());
 
         }
     }

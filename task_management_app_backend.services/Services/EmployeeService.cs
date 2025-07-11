@@ -67,5 +67,11 @@ namespace task_management_app_backend.services.Services
             
              
         }
+
+        public List<getEmployeeScrollBarDto> getEmployeeScroll() {
+
+            return _employeeRepository.getEmpScroll();
+            
+        }
     }
 }

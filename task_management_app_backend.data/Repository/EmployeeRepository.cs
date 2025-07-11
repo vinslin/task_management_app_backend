@@ -2,6 +2,7 @@
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.IRepository;
+using task_management_app_backend.resources.Dtos.ResponseDto;
 
 namespace task_management_app_backend.data.Repository
 {
@@ -57,6 +58,19 @@ namespace task_management_app_backend.data.Repository
             _context.Employees.Remove(employee);
             _context.SaveChanges();
             return true;
+        }
+
+        public List<getEmployeeScrollBarDto> getEmpScroll() {
+
+            return _context.Employees
+               .Select(e => new getEmployeeScrollBarDto
+               {
+                   Id = e.ID,
+                   Name = e.Name
+               })
+               .ToList();
+
+
         }
 
     }
