@@ -1,4 +1,5 @@
 ﻿using task_management_app_backend.data.Entities;
+using task_management_app_backend.resources.Dtos.ResponseDto;
 
 namespace task_management_app_backend.data.IRepository
 {
@@ -8,5 +9,9 @@ namespace task_management_app_backend.data.IRepository
         List<Project> GetAll();
         Project Update(Project project);
         Project GetProjectById(Guid id);
+
+        bool DeletePro(Guid id);
+
+        List<getProjectsScrollbarDto> getProScroll();
     }
 }

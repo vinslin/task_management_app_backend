@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace task_management_app_backend.services.CQRS.Commands
+namespace task_management_app_backend.resources.CQRS.Commands
 {
     public class AddEmployeeCommand : IRequest<Guid>  //last ullathu guid la return pannum lik oru function mathiri
     {
