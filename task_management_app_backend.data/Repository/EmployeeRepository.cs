@@ -44,5 +44,20 @@ namespace task_management_app_backend.data.Repository
                     .ThenInclude(ut => ut.Task)
                 .FirstOrDefault(e => e.ID == id);
         }
+
+
+
+        public bool DeleteEmployee(Guid id)
+        {
+            var employee = _context.Employees.FirstOrDefault(e => e.ID == id);
+
+            if (employee == null)
+                return false;
+
+            _context.Employees.Remove(employee);
+            _context.SaveChanges();
+            return true;
+        }
+
     }
 }

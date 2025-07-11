@@ -40,5 +40,17 @@ namespace task_management_app_backend.data.Repository
         {
             return _context.Projects.FirstOrDefault(p => p.Id == id);
         }
+
+        public bool DeletePro(Guid id) {
+
+            var project = _context.Projects.FirstOrDefault(p => p.Id == id);
+
+            if (project == null)
+                return false;
+
+            _context.Projects.Remove(project);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }

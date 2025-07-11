@@ -5,12 +5,14 @@ namespace task_management_app_backend.data.IRepository
 {
     public interface IEmployeeRepository
     {
-        Employee AddEmployee(Employee employee); // Removed CreateEmployeeDto
+        Employee AddEmployee(Employee employee); 
 
         List<Employee> GetAll();
 
         Employee Update(Employee employee);
 
         Employee GetElementById(Guid id);
+
+        bool DeleteEmployee(Guid id);
     }
 }

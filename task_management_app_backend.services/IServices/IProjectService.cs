@@ -15,6 +15,8 @@ namespace task_management_app_backend.services.IServices
         public Project UpdateProject(Guid id , CreateProjectDto project);
         public Project GetProjectById(Guid id);
 
+        public bool deleteProject(Guid id);
+
 
 
     }

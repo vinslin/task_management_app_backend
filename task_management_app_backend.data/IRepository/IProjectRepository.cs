@@ -8,5 +8,7 @@ namespace task_management_app_backend.data.IRepository
         List<Project> GetAll();
         Project Update(Project project);
         Project GetProjectById(Guid id);
+
+        bool DeletePro(Guid id);
     }
 }

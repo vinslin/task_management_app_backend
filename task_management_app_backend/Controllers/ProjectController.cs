@@ -40,5 +40,13 @@ namespace task_management_app_backend.api.Controllers
             return Ok(result);
 
         }
+
+        [HttpDelete("deleteProject/{id:guid}")]
+        public async Task<IActionResult> DeleteProject(Guid id)
+        {
+            var result = _projectService.deleteProject(id);
+            return Ok(result);
+
+        }
     }
 }

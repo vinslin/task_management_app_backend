@@ -54,5 +54,16 @@ namespace task_management_app_backend.api.Controllers
             return Ok(result);
 
         }
+        [HttpDelete("deleteemployee/{id:guid}")]
+        public async Task<IActionResult> deleteEmployee(Guid id)
+        {
+            var result = _employeeService.deleteEmployee(id);
+            if (result == false)
+            {
+                return NotFound($"No employee with ID {id}.");
+            }
+            return Ok(result);
+
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using task_management_app_backend.data.Entities;
+﻿using System.Reflection.Metadata.Ecma335;
+using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.services.IServices;
@@ -50,5 +51,20 @@ namespace task_management_app_backend.services.Services
         {
             return _projectRepository.GetProjectById(id);
         }
+
+        public bool deleteProject(Guid id) {
+
+            var project = _projectRepository.GetProjectById(id);
+            if (project == null)
+            {
+                throw new KeyNotFoundException($"Project with ID {id} not found.");
+            }
+
+            return _projectRepository.DeletePro(id);
+
+           
+        
+        }
+       
     }
 }

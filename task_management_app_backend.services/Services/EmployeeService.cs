@@ -56,5 +56,16 @@ namespace task_management_app_backend.services.Services
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(employee.UserTasks.Select(ut => ut.Task).ToList());
         }
+
+        public bool deleteEmployee(Guid id)
+        {
+           // var employee = _employeeRepository.GetElementById(id);
+            //if (employee == null)
+              //  throw new KeyNotFoundException($"Employee with ID {id} not found.");
+
+                return _employeeRepository.DeleteEmployee(id);
+            
+             
+        }
     }
 }
