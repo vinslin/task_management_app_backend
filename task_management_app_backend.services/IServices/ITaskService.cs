@@ -18,7 +18,9 @@ namespace task_management_app_backend.services.IServices
         List<ResponseCreateTaskDto> GetCompletedTasks(int n);
 
         List<ResponseCreateTaskDto> GetTasksDueThisWeek();
+        ResponseCreateTaskDto UpdateTask(UpdateTaskDto dto);
+
     }
-    
+
 
 }

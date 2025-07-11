@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using task_management_app_backend.data.Entities;
+using task_management_app_backend.data.Enums;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.resources.Dtos.ResponseDto;
@@ -87,5 +88,51 @@ namespace task_management_app_backend.services.Services
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
+        public ResponseCreateTaskDto UpdateTask(UpdateTaskDto dto)
+        {
+            var task = _taskRepository.GetElementById(dto.ID);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            // Update fields
+            task.Title = dto.Title;
+            task.Description = dto.Description;
+            task.Priority = (PriorityLevel)dto.Priority;
+            task.DueDate = dto.DueDate;
+            task.IsCompleted = dto.IsCompleted;
+            task.SetUpdated(); // update UpdatedAt
+
+            var updatedTask = _taskRepository.Update(task);
+
+            // Update Employee
+            var userRelation = _userRelatedTaskRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == task.ID);
+
+            if (userRelation != null)
+            {
+                userRelation.EmployeeId = dto.EmployeeId;
+                _userRelatedTaskRepository.Update(userRelation);
+            }
+
+            // Update Project
+            var projectRelation = _taskRelatedProjectRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == task.ID);
+
+            if (projectRelation != null)
+            {
+                projectRelation.ProjectId = dto.ProjectId;
+                _taskRelatedProjectRepository.Update(projectRelation);
+            }
+
+            var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
+            result.EmployeeId = dto.EmployeeId;
+            result.ProjectId = dto.ProjectId;
+
+            return result;
+        }
+
+
     }
 }

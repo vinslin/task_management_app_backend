@@ -70,6 +70,20 @@ namespace task_management_app_backend.Controllers
                 }
                 return Ok(result);
         }
+        [HttpPut("UpdateTask")]
+        public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskDto dto)
+        {
+            try
+            {
+                var result = _taskService.UpdateTask(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
 
     }

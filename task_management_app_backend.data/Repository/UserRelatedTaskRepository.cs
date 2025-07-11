@@ -26,8 +26,13 @@ namespace task_management_app_backend.data.Repository
         public UserReleatedTask Update(UserReleatedTask task)
         {
             var result = _context.userReleatedTasks.Update(task);
-
+            _context.SaveChanges();
             return result.Entity;
         }
+        public List<UserReleatedTask> GetAll()
+        {
+            return _context.userReleatedTasks.ToList();
+        }
+
     }
 }

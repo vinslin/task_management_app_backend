@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using task_management_app_backend.data.Entities;
+using task_management_app_backend.data.Enums;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.resources.Dtos.ResponseDto;
 
@@ -44,6 +45,10 @@ namespace task_management_app_backend.resources.Mapper
                 .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Task.Priority))
                 .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.Task.DueDate))
                 .ForMember(dest => dest.EmployeeId, opt => opt.Ignore()); // You’re setting this manually
+
+            CreateMap<UpdateTaskDto, task_management_app_backend.data.Entities.Task>()
+    .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => (PriorityLevel)src.Priority));
+
         }
     }
 }
