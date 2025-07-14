@@ -20,6 +20,8 @@ namespace task_management_app_backend.services.IServices
         List<ResponseCreateTaskDto> GetTasksDueThisWeek();
         Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto);
 
+        data.Entities.Task DeleteTask(Guid id);
+
     }
 
 

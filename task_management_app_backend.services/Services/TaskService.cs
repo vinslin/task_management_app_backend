@@ -150,6 +150,33 @@ namespace task_management_app_backend.services.Services
 
             return result;
         }
+        public data.Entities.Task DeleteTask(Guid id)
+        {
+            var task = _taskRepository.GetElementById(id);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            // Delete Task ↔ Employee relation
+            var userRelation = _userRelatedTaskRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == id);
+            if (userRelation != null)
+            {
+                _userRelatedTaskRepository.Delete(userRelation);
+            }
+
+            // Delete Task ↔ Project relation
+            var projectRelation = _taskRelatedProjectRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == id);
+            if (projectRelation != null)
+            {
+                _taskRelatedProjectRepository.Delete(projectRelation);
+            }
+
+            // Delete Task
+            return _taskRepository.Delete(task);
+        }
 
 
     }

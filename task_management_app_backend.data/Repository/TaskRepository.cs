@@ -56,6 +56,12 @@ namespace task_management_app_backend.data.Repository
             _context.SaveChanges();
             return task;
         }
+        public Entities.Task Delete(Entities.Task task)
+        {
+            _context.Tasks.Remove(task);
+            _context.SaveChanges();
+            return task;
+        }
 
 
     }
