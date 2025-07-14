@@ -15,5 +15,6 @@ namespace task_management_app_backend.data.IRepository
         // Additional methods can be added as needed, such as GetById, GetAll, etc.
 
         public List<TaskRelatedProject> GetAll();
+        public bool Delete(TaskRelatedProject relation);
     }
 }

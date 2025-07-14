@@ -114,38 +114,37 @@ namespace task_management_app_backend.services.Services
 
             if (userRelation != null)
             {
-                userRelation.EmployeeId = dto.EmployeeId;
-                _userRelatedTaskRepository.Update(userRelation);
+                // Delete old FK relation
+                _userRelatedTaskRepository.Delete(userRelation);
             }
-            else {
-                _userRelatedTaskRepository.Add(new UserReleatedTask 
-                {
-                    TaskId = dto.ID,
-                    EmployeeId = dto.EmployeeId
-                });
-            }
+
+            // Always add the new one
+            _userRelatedTaskRepository.Add(new UserReleatedTask
+            {
+                TaskId = dto.ID,
+                EmployeeId = dto.EmployeeId
+            });
 
             // Update Project
             var projectRelation = _taskRelatedProjectRepository
-                    .GetAll()
-                    .FirstOrDefault(r => r.TaskId == task.ID);
+              .GetAll()
+              .FirstOrDefault(r => r.TaskId == task.ID);
 
             if (projectRelation != null)
             {
-                projectRelation.ProjectId = dto.ProjectId;
-                _taskRelatedProjectRepository.Update(projectRelation);
-            }
-            else {
-                _taskRelatedProjectRepository.Add(new TaskRelatedProject
-                { 
-                    TaskId=dto.ID,
-                    ProjectId =dto.ProjectId
-                
-                });
-                 
+                // Remove old FK relation
+                _taskRelatedProjectRepository.Delete(projectRelation);
             }
 
-                var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
+            // Always add the new one
+            _taskRelatedProjectRepository.Add(new TaskRelatedProject
+            {
+                TaskId = dto.ID,
+                ProjectId = dto.ProjectId
+            });
+
+
+            var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
             result.EmployeeId = dto.EmployeeId;
             result.ProjectId = dto.ProjectId;
 

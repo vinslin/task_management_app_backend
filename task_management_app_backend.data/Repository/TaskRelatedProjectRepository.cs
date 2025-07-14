@@ -35,5 +35,13 @@ namespace task_management_app_backend.data.Repository
             return _context.TaskRelatedProjects.ToList();
         }
 
+        public bool Delete(TaskRelatedProject relation)
+        {
+            _context.TaskRelatedProjects.Remove(relation);
+            _context.SaveChanges();
+            return true;
+        }
+
+
     }
 }
