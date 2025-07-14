@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Threading.Tasks;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.Enums;
 using task_management_app_backend.data.IRepository;
@@ -58,7 +60,8 @@ namespace task_management_app_backend.services.Services
         public List<ResponseCreateTaskDto> GetAllTasks()
         {
             var tasks = _taskRepository.GetAll();
-            return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+            var result = _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+            return (result);
         }
 
         public data.Entities.Task CompleteTask(Guid id)
@@ -88,7 +91,7 @@ namespace task_management_app_backend.services.Services
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
-        public ResponseCreateTaskDto UpdateTask(UpdateTaskDto dto)
+        public async Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto)
         {
             var task = _taskRepository.GetElementById(dto.ID);
             if (task == null)
@@ -114,19 +117,35 @@ namespace task_management_app_backend.services.Services
                 userRelation.EmployeeId = dto.EmployeeId;
                 _userRelatedTaskRepository.Update(userRelation);
             }
+            else {
+                _userRelatedTaskRepository.Add(new UserReleatedTask 
+                {
+                    TaskId = dto.ID,
+                    EmployeeId = dto.EmployeeId
+                });
+            }
 
             // Update Project
             var projectRelation = _taskRelatedProjectRepository
-                .GetAll()
-                .FirstOrDefault(r => r.TaskId == task.ID);
+                    .GetAll()
+                    .FirstOrDefault(r => r.TaskId == task.ID);
 
             if (projectRelation != null)
             {
                 projectRelation.ProjectId = dto.ProjectId;
                 _taskRelatedProjectRepository.Update(projectRelation);
             }
+            else {
+                _taskRelatedProjectRepository.Add(new TaskRelatedProject
+                { 
+                    TaskId=dto.ID,
+                    ProjectId =dto.ProjectId
+                
+                });
+                 
+            }
 
-            var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
+                var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
             result.EmployeeId = dto.EmployeeId;
             result.ProjectId = dto.ProjectId;
 
