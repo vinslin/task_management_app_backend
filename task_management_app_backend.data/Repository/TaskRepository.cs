@@ -39,15 +39,30 @@ namespace task_management_app_backend.data.Repository
                 .ToList();
         }
 
-        public Entities.Task Update(Entities.Task task)
-        {
-            var result = _context.Tasks.Update(task);
-            _context.SaveChanges();
-            return result.Entity;
-        }
+        //public Entities.Task Update(Entities.Task task)
+        //{
+        //    var result = _context.Tasks.Update(task);
+        //    _context.SaveChanges();
+        //    return result.Entity;
+        //}
         public Entities.Task GetElementById(Guid id)
         {
             return _context.Tasks.FirstOrDefault(p => p.ID == id);
         }
+
+        public Entities.Task Update(Entities.Task task)
+        {
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+            return task;
+        }
+        public Entities.Task Delete(Entities.Task task)
+        {
+            _context.Tasks.Remove(task);
+            _context.SaveChanges();
+            return task;
+        }
+
+
     }
 }

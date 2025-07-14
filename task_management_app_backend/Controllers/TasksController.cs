@@ -70,6 +70,34 @@ namespace task_management_app_backend.Controllers
                 }
                 return Ok(result);
         }
+        [HttpPut("UpdateTask")]
+        public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskDto dto)
+        {
+            try
+            {
+                var result = _taskService.UpdateTask(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpDelete("deleteTask/{id}")]
+        public async Task<IActionResult> DeleteTask(Guid id)
+        {
+            try
+            {
+                var result = _taskService.DeleteTask(id);
+                return Ok(new { message = "Task deleted successfully", taskId = result.ID });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
 
 
     }

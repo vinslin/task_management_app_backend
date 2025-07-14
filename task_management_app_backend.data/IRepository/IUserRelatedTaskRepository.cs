@@ -13,5 +13,11 @@ namespace task_management_app_backend.data.IRepository
         public bool Add(UserReleatedTask task);
         public UserReleatedTask Update(UserReleatedTask task);
 
+        public List<UserReleatedTask> GetAll();
+
+        public bool Delete(UserReleatedTask relation);
+     
+
+
     }
 }

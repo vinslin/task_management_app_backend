@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Threading.Tasks;
 using task_management_app_backend.data.Entities;
+using task_management_app_backend.data.Enums;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.resources.Dtos.ResponseDto;
@@ -57,7 +60,8 @@ namespace task_management_app_backend.services.Services
         public List<ResponseCreateTaskDto> GetAllTasks()
         {
             var tasks = _taskRepository.GetAll();
-            return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+            var result = _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+            return (result);
         }
 
         public data.Entities.Task CompleteTask(Guid id)
@@ -87,5 +91,93 @@ namespace task_management_app_backend.services.Services
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
+        public async Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto)
+        {
+            var task = _taskRepository.GetElementById(dto.ID);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            // Update fields
+            task.Title = dto.Title;
+            task.Description = dto.Description;
+            task.Priority = (PriorityLevel)dto.Priority;
+            task.DueDate = dto.DueDate;
+            task.IsCompleted = dto.IsCompleted;
+            task.SetUpdated(); // update UpdatedAt
+
+            var updatedTask = _taskRepository.Update(task);
+
+            // Update Employee
+            var userRelation = _userRelatedTaskRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == task.ID);
+
+            if (userRelation != null)
+            {
+                // Delete old FK relation
+                _userRelatedTaskRepository.Delete(userRelation);
+            }
+
+            // Always add the new one
+            _userRelatedTaskRepository.Add(new UserReleatedTask
+            {
+                TaskId = dto.ID,
+                EmployeeId = dto.EmployeeId
+            });
+
+            // Update Project
+            var projectRelation = _taskRelatedProjectRepository
+              .GetAll()
+              .FirstOrDefault(r => r.TaskId == task.ID);
+
+            if (projectRelation != null)
+            {
+                // Remove old FK relation
+                _taskRelatedProjectRepository.Delete(projectRelation);
+            }
+
+            // Always add the new one
+            _taskRelatedProjectRepository.Add(new TaskRelatedProject
+            {
+                TaskId = dto.ID,
+                ProjectId = dto.ProjectId
+            });
+
+
+            var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
+            result.EmployeeId = dto.EmployeeId;
+            result.ProjectId = dto.ProjectId;
+
+            return result;
+        }
+        public data.Entities.Task DeleteTask(Guid id)
+        {
+            var task = _taskRepository.GetElementById(id);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            // Delete Task ↔ Employee relation
+            var userRelation = _userRelatedTaskRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == id);
+            if (userRelation != null)
+            {
+                _userRelatedTaskRepository.Delete(userRelation);
+            }
+
+            // Delete Task ↔ Project relation
+            var projectRelation = _taskRelatedProjectRepository
+                .GetAll()
+                .FirstOrDefault(r => r.TaskId == id);
+            if (projectRelation != null)
+            {
+                _taskRelatedProjectRepository.Delete(projectRelation);
+            }
+
+            // Delete Task
+            return _taskRepository.Delete(task);
+        }
+
+
     }
 }

@@ -26,8 +26,22 @@ namespace task_management_app_backend.data.Repository
         public TaskRelatedProject Update(TaskRelatedProject task)
         {
             var result = _context.TaskRelatedProjects.Update(task);
-
+            _context.SaveChanges();
             return result.Entity;
         }
+
+        public List<TaskRelatedProject> GetAll()
+        {
+            return _context.TaskRelatedProjects.ToList();
+        }
+
+        public bool Delete(TaskRelatedProject relation)
+        {
+            _context.TaskRelatedProjects.Remove(relation);
+            _context.SaveChanges();
+            return true;
+        }
+
+
     }
 }
