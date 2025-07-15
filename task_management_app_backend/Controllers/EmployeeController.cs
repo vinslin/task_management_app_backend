@@ -73,5 +73,18 @@ namespace task_management_app_backend.api.Controllers
             return Ok(_employeeService.getEmployeeScroll());
 
         }
+
+        [HttpGet("getsingleemployee/{id:guid}")]
+        public async Task<IActionResult> getSingleEmployee(Guid id)
+        {
+            var result = _employeeService.getEmployee(id);
+            if (result == null)
+            {
+                return NotFound($"No employee with ID {id}.");
+            }
+            return Ok(result);
+
+        }
+
     }
 }

@@ -40,10 +40,7 @@ namespace task_management_app_backend.data.Repository
 
         public Employee GetElementById(Guid id)
         {
-            return _context.Employees
-                .Include(e => e.UserTasks)
-                    .ThenInclude(ut => ut.Task)
-                .FirstOrDefault(e => e.ID == id);
+            return _context.Employees.FirstOrDefault(e => e.ID == id);
         }
 
 

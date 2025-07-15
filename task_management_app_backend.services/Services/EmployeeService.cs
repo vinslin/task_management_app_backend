@@ -73,5 +73,13 @@ namespace task_management_app_backend.services.Services
             return _employeeRepository.getEmpScroll();
             
         }
+
+        public Employee getEmployee(Guid id) {
+            var employee = _employeeRepository.GetElementById(id);
+            if (employee == null)
+                throw new KeyNotFoundException($"Employee with ID {id} not found.");
+
+            return employee;
+        }
     }
 }

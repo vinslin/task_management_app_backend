@@ -39,6 +39,7 @@ builder.Services.AddControllers()
         config.RegisterValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>();
     });
 
+
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

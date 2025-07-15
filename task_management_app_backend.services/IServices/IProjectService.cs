@@ -20,6 +20,8 @@ namespace task_management_app_backend.services.IServices
 
         public List<getProjectsScrollbarDto> getProjectScroll();
 
+        public Project getOneProject(Guid id);
+
 
     }
 }

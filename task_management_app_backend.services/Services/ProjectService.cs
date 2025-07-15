@@ -69,6 +69,15 @@ namespace task_management_app_backend.services.Services
 
             return _projectRepository.getProScroll();
         }
+        public Project getOneProject(Guid id) {
 
+            var project = _projectRepository.GetProjectById(id);
+            if (project == null)
+            {
+                throw new KeyNotFoundException($"Project with ID {id} not found.");
+            }
+
+            return project;
+        }
     }
 }

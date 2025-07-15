@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.Threading.Tasks;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.Enums;
 using task_management_app_backend.data.IRepository;
@@ -91,6 +89,19 @@ namespace task_management_app_backend.services.Services
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
+
+        public List<ResponseCreateTaskDto> GetDueTasks()
+        {
+            var today = DateTime.UtcNow.Date;
+           // var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
+
+            var tasks = _taskRepository.GetAll()
+                .Where(t => t.DueDate.Date < today && t.IsCompleted != 1)
+                .ToList();
+
+            return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+        }
+
         public async Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto)
         {
             var task = _taskRepository.GetElementById(dto.ID);
@@ -176,6 +187,18 @@ namespace task_management_app_backend.services.Services
 
             // Delete Task
             return _taskRepository.Delete(task);
+        }
+
+        public List<ResponseCreateTaskDto> getTimeOne() {
+            var today = DateTime.UtcNow.Date;
+            // var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
+
+            var tasks = _taskRepository.GetAll()
+                .Where(t => t.DueDate.Date >= today && t.IsCompleted != 1)
+                .ToList();
+
+            return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+
         }
 
 

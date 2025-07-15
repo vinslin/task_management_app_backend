@@ -32,14 +32,14 @@ namespace task_management_app_backend.Controllers
             var result = _taskService.GetAllTasks();
             return Ok(result);
         }
-        [HttpGet("GetCompletedTasks")]
+        [HttpGet("getcompletedtasks")]
         public async Task<IActionResult> GetCompletedTasks()
         {
             var result = _taskService.GetCompletedTasks(1);
             return Ok(result);
         }
 
-        [HttpGet("GetInmpletedTasks")]
+        [HttpGet("getincompletedtasks")]
         public async Task<IActionResult> GetInCompletedTasks()
         {
             var result = _taskService.GetCompletedTasks(0);
@@ -96,7 +96,33 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpGet("getduetasks")]
+        public async Task<IActionResult> dueTask()
+        {
+            try
+            {
+                var result = _taskService.GetDueTasks();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
+        [HttpGet("gettimehavingtasks")]
+        public async Task<IActionResult> getTimeHavingTask()
+        {
+            try
+            {
+                var result = _taskService.getTimeOne();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
 

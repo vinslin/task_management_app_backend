@@ -17,5 +17,7 @@ namespace task_management_app_backend.services.IServices
         bool deleteEmployee(Guid id);
 
         List<getEmployeeScrollBarDto> getEmployeeScroll();
+
+        Employee getEmployee(Guid  id);
     }
 }

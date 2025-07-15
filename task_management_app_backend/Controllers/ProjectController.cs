@@ -49,12 +49,21 @@ namespace task_management_app_backend.api.Controllers
             return Ok(result);
 
         }
+
         [HttpGet("Getprojectforscroller")]
         public async Task<IActionResult> GetProjectForScrollBar()
         {
 
 
             return Ok(_projectService.getProjectScroll());
+
+        }
+
+        [HttpGet("getoneproject/{id:guid}")]
+        public async Task<IActionResult> getOneProject(Guid id)
+        {
+            var result = _projectService.getOneProject(id);
+            return Ok(result);
 
         }
     }
