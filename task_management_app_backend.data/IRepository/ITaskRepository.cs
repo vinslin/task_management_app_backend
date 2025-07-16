@@ -15,6 +15,8 @@ namespace task_management_app_backend.data.IRepository
         data.Entities.Task Update(data.Entities.Task task);
         Entities.Task Delete(Entities.Task task);
 
+        public Entities.Task? GetOne(Guid id);
+
 
     }
 }

@@ -140,6 +140,21 @@ namespace task_management_app_backend.Controllers
             }
         }
 
+        [HttpGet("gettaskbyid/{id}")]
+        public async Task<IActionResult> GetTaskById(Guid id)
+        {
+            try
+            {
+                var result = _taskService.getTaskByIdService(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
 
     }
 }

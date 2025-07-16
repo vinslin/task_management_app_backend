@@ -243,5 +243,14 @@ namespace task_management_app_backend.services.Services
                 dueTasks = dueTasks
             };
         }
+
+        public ResponseCreateTaskDto getTaskByIdService(Guid id) {
+
+            var tasks = _taskRepository.GetOne(id);
+            var result = _mapper.Map<ResponseCreateTaskDto>(tasks);
+            return (result);
+
+
+        }
     }
 }

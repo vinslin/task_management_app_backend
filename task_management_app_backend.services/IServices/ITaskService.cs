@@ -28,6 +28,8 @@ namespace task_management_app_backend.services.IServices
 
         EmployeeTasks employeeTasksService(Guid id);
 
+        ResponseCreateTaskDto getTaskByIdService(Guid id);
+
     }
 
 
