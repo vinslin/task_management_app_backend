@@ -219,7 +219,7 @@ namespace task_management_app_backend.services.Services
 
             var timeHavingTasks = userTasks
                 .Where(ut => ut.Task != null && ut.Task.DueDate > DateTime.Now)
-                .Select(ut => new TimeHavingTasks
+                .Select(ut => new CompletedTasks
                 {
                     taskId = ut.Task.ID,
                     taskName = ut.Task.Title
@@ -229,7 +229,7 @@ namespace task_management_app_backend.services.Services
 
             var dueTasks = userTasks
                 .Where(ut => ut.Task != null && ut.Task.DueDate <= DateTime.Now && ut.Task.IsCompleted == 0)
-                .Select(ut => new DueTasks
+                .Select(ut => new CompletedTasks
                 {
                     taskId = ut.Task.ID,
                     taskName = ut.Task.Title
@@ -251,6 +251,45 @@ namespace task_management_app_backend.services.Services
             return (result);
 
 
+        }
+
+        public ProjectTasks projectTaskService(Guid id) {
+            var projectTasks = _taskRelatedProjectRepository.projectReleatedTasks(id);
+
+            var completedTasks = projectTasks
+                .Where(ut => ut.Task != null && ut.Task.IsCompleted == 1)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            var timeHavingTasks = projectTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate > DateTime.Now)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+
+                })
+                .ToList();
+
+            var dueTasks = projectTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate <= DateTime.Now && ut.Task.IsCompleted == 0)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            return new ProjectTasks
+            {
+                completedTasks = completedTasks,
+                timeHavingTasks = timeHavingTasks,
+                dueTasks = dueTasks
+            };
         }
     }
 }

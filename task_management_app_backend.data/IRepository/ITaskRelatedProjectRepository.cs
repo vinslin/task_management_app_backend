@@ -12,5 +12,7 @@ namespace task_management_app_backend.data.IRepository
 
         public List<TaskRelatedProject> GetAll();
         public bool Delete(TaskRelatedProject relation);
+
+        public List<TaskRelatedProject> projectReleatedTasks(Guid id);
     }
 }

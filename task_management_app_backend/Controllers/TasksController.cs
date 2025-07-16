@@ -155,6 +155,23 @@ namespace task_management_app_backend.Controllers
         }
 
 
+        [HttpGet("projecttasks/{id}")]
+        public async Task<IActionResult> ProjectTasks(Guid id)
+        {
+            try
+            {
+                var result = _taskService.projectTaskService(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
+
 
     }
 }

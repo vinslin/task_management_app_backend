@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.IRepository;
@@ -40,6 +41,17 @@ namespace task_management_app_backend.data.Repository
             _context.TaskRelatedProjects.Remove(relation);
             _context.SaveChanges();
             return true;
+        }
+
+        public List<TaskRelatedProject> projectReleatedTasks(Guid id) { 
+
+            return _context.TaskRelatedProjects.
+                Where(pt => pt.ProjectId == id)
+                .Include(pt => pt.Task)
+                .ToList();
+
+
+
         }
 
 
