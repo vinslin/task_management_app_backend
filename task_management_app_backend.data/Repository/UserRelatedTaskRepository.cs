@@ -1,6 +1,7 @@
-﻿using task_management_app_backend.data.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using task_management_app_backend.data.Data;
 using task_management_app_backend.data.Entities;
-using task_management_app_backend.resources.Dtos.RequestDto;
+
 using task_management_app_backend.data.IRepository;
 namespace task_management_app_backend.data.Repository
 {
@@ -40,6 +41,16 @@ namespace task_management_app_backend.data.Repository
             _context.SaveChanges();
             return true;
         }
+
+
+        public List<UserReleatedTask> employeeReleatedTasks(Guid id)
+        {
+            return _context.userReleatedTasks
+                .Where(ut => ut.EmployeeId == id)
+                .Include(ut => ut.Task)  // Include related task details
+                .ToList();
+        }
+
 
 
     }

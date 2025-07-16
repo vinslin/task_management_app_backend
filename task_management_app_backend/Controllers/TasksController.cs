@@ -96,6 +96,7 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
         [HttpGet("getduetasks")]
         public async Task<IActionResult> dueTask()
         {
@@ -124,6 +125,20 @@ namespace task_management_app_backend.Controllers
             }
         }
 
+
+        [HttpGet("employeetasks/{id}")]
+        public async Task<IActionResult> EmployeeTasks(Guid id)
+        {
+            try
+            {
+                var result = _taskService.employeeTasksService(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
     }

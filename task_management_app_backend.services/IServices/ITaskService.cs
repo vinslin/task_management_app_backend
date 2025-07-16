@@ -26,6 +26,8 @@ namespace task_management_app_backend.services.IServices
 
         List<ResponseCreateTaskDto> getTimeOne();
 
+        EmployeeTasks employeeTasksService(Guid id);
+
     }
 
 

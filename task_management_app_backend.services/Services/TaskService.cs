@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.Enums;
 using task_management_app_backend.data.IRepository;
+using task_management_app_backend.resources.Dtos.MiddleDto;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.resources.Dtos.ResponseDto;
 using task_management_app_backend.services.IServices;
@@ -14,6 +16,7 @@ namespace task_management_app_backend.services.Services
         private readonly ITaskRelatedProjectRepository _taskRelatedProjectRepository;
         private readonly IUserRelatedTaskRepository _userRelatedTaskRepository;
         private readonly IMapper _mapper;
+     
 
         public TaskService(
             ITaskRepository taskRepository,
@@ -201,6 +204,44 @@ namespace task_management_app_backend.services.Services
 
         }
 
+        public EmployeeTasks employeeTasksService(Guid id)
+        {
+            var userTasks = _userRelatedTaskRepository.employeeReleatedTasks(id);
 
+            var completedTasks = userTasks
+                .Where(ut => ut.Task != null && ut.Task.IsCompleted == 1)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            var timeHavingTasks = userTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate > DateTime.Now)
+                .Select(ut => new TimeHavingTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                   
+                })
+                .ToList();
+
+            var dueTasks = userTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate <= DateTime.Now && ut.Task.IsCompleted == 0)
+                .Select(ut => new DueTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            return new EmployeeTasks
+            {
+                completedTasks = completedTasks,
+                timeHavingTasks = timeHavingTasks,
+                dueTasks = dueTasks
+            };
+        }
     }
 }

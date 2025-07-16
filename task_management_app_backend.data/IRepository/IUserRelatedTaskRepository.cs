@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using task_management_app_backend.resources.Dtos.MiddleDto;
 using task_management_app_backend.data.Entities;
 
 namespace task_management_app_backend.data.IRepository
@@ -16,6 +12,8 @@ namespace task_management_app_backend.data.IRepository
         public List<UserReleatedTask> GetAll();
 
         public bool Delete(UserReleatedTask relation);
+
+        public List<UserReleatedTask> employeeReleatedTasks(Guid id);
      
 
 
