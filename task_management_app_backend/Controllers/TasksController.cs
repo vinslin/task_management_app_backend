@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.services.IServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace task_management_app_backend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TasksController : ControllerBase
@@ -17,7 +19,7 @@ namespace task_management_app_backend.Controllers
             _taskService = taskService;
         }
 
-
+        [Authorize(Roles = "Manager,Director")]
         [HttpPost]
         public async Task<IActionResult> AddTask(CreateTaskDto dto)
         {
@@ -25,6 +27,10 @@ namespace task_management_app_backend.Controllers
             return Ok(result);
         }
 
+
+
+
+        [Authorize(Roles = "Manager,Director")]
         [HttpGet("GetAllTasks")]
 
         public async Task<IActionResult> GetAllTasks()
@@ -32,6 +38,7 @@ namespace task_management_app_backend.Controllers
             var result = _taskService.GetAllTasks();
             return Ok(result);
         }
+
         [HttpGet("getcompletedtasks")]
         public async Task<IActionResult> GetCompletedTasks()
         {
@@ -154,7 +161,7 @@ namespace task_management_app_backend.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Director")]
         [HttpGet("projecttasks/{id}")]
         public async Task<IActionResult> ProjectTasks(Guid id)
         {

@@ -1,9 +1,13 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using task_management_app_backend.api.Middleware;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.IRepository;
@@ -14,9 +18,7 @@ using task_management_app_backend.resources.Mapper;
 using task_management_app_backend.services.CQRS.Handlers;
 using task_management_app_backend.services.IServices;
 using task_management_app_backend.services.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+//using static System.Collections.Immutable.ImmutableArray<T>;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,11 +86,13 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskRelatedProjectRepository, TaskRelatedProjectRepository>();
 builder.Services.AddScoped<IUserRelatedTaskRepository, UserRelatedTaskRepository>();
+builder.Services.AddScoped<IUserRepository, AuthenticationUserRepository>();
 
 // Register Services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 //chache services
 builder.Services.AddMemoryCache();
@@ -114,18 +118,47 @@ builder.Services.AddVersionedApiExplorer(options =>
 // ----------------------------------
 builder.Services.AddSwaggerGen(options =>
 {
+    // 👇 Get API version descriptions
     var provider = builder.Services.BuildServiceProvider()
                                    .GetRequiredService<IApiVersionDescriptionProvider>();
 
     foreach (var description in provider.ApiVersionDescriptions)
     {
-        options.SwaggerDoc(description.GroupName, new Microsoft.OpenApi.Models.OpenApiInfo
+        options.SwaggerDoc(description.GroupName, new OpenApiInfo
         {
             Title = $"Task Management API {description.ApiVersion}",
             Version = description.ApiVersion.ToString()
         });
     }
+
+    // 👇 ADD JWT SECURITY SCHEME
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token like this: **Bearer your_token_here**"
+    });
+
+    // 👇 REQUIRE JWT TOKEN FOR SECURED ENDPOINTS
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
+
 
 builder.Services.AddMediatR(typeof(AddEmployeeHandler).Assembly);
 
