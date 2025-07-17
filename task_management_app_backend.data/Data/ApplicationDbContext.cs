@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.data.Entities;
+using task_management_app_backend.resources.Entities;
 
 namespace task_management_app_backend.data.Data
 {
@@ -17,6 +18,8 @@ namespace task_management_app_backend.data.Data
         public DbSet<UserReleatedTask> userReleatedTasks { get; set; } 
 
         public DbSet<TaskRelatedProject> TaskRelatedProjects { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) { 
