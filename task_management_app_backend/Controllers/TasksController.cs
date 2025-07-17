@@ -66,6 +66,8 @@ namespace task_management_app_backend.Controllers
             return Ok(result);
         }
 
+
+
         [HttpGet("TaskDueThisWeek")]
 
         public async Task<IActionResult> DueThisWeek()
@@ -77,6 +79,8 @@ namespace task_management_app_backend.Controllers
                 }
                 return Ok(result);
         }
+
+
         [HttpPut("UpdateTask")]
         public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskDto dto)
         {
@@ -90,6 +94,7 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [Authorize(Roles = "Director,Manager")]
         [HttpDelete("deleteTask/{id}")]
         public async Task<IActionResult> DeleteTask(Guid id)
         {
@@ -103,7 +108,7 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Director")]
         [HttpGet("getduetasks")]
         public async Task<IActionResult> dueTask()
         {
@@ -117,7 +122,7 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Director")]
         [HttpGet("gettimehavingtasks")]
         public async Task<IActionResult> getTimeHavingTask()
         {
@@ -132,7 +137,7 @@ namespace task_management_app_backend.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Director")]
         [HttpGet("employeetasks/{id}")]
         public async Task<IActionResult> EmployeeTasks(Guid id)
         {
@@ -147,6 +152,7 @@ namespace task_management_app_backend.Controllers
             }
         }
 
+        [Authorize(Roles = "Director")]
         [HttpGet("gettaskbyid/{id}")]
         public async Task<IActionResult> GetTaskById(Guid id)
         {
