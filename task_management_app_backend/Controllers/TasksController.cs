@@ -32,14 +32,14 @@ namespace task_management_app_backend.Controllers
             var result = _taskService.GetAllTasks();
             return Ok(result);
         }
-        [HttpGet("GetCompletedTasks")]
+        [HttpGet("getcompletedtasks")]
         public async Task<IActionResult> GetCompletedTasks()
         {
             var result = _taskService.GetCompletedTasks(1);
             return Ok(result);
         }
 
-        [HttpGet("GetInmpletedTasks")]
+        [HttpGet("getincompletedtasks")]
         public async Task<IActionResult> GetInCompletedTasks()
         {
             var result = _taskService.GetCompletedTasks(0);
@@ -96,6 +96,79 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("getduetasks")]
+        public async Task<IActionResult> dueTask()
+        {
+            try
+            {
+                var result = _taskService.GetDueTasks();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("gettimehavingtasks")]
+        public async Task<IActionResult> getTimeHavingTask()
+        {
+            try
+            {
+                var result = _taskService.getTimeOne();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("employeetasks/{id}")]
+        public async Task<IActionResult> EmployeeTasks(Guid id)
+        {
+            try
+            {
+                var result = _taskService.employeeTasksService(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("gettaskbyid/{id}")]
+        public async Task<IActionResult> GetTaskById(Guid id)
+        {
+            try
+            {
+                var result = _taskService.getTaskByIdService(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("projecttasks/{id}")]
+        public async Task<IActionResult> ProjectTasks(Guid id)
+        {
+            try
+            {
+                var result = _taskService.projectTaskService(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
 
 

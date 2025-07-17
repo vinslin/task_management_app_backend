@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.Threading.Tasks;
 using task_management_app_backend.data.Entities;
 using task_management_app_backend.data.Enums;
 using task_management_app_backend.data.IRepository;
+using task_management_app_backend.resources.Dtos.MiddleDto;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.resources.Dtos.ResponseDto;
 using task_management_app_backend.services.IServices;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace task_management_app_backend.services.Services
 {
@@ -16,17 +16,49 @@ namespace task_management_app_backend.services.Services
         private readonly ITaskRelatedProjectRepository _taskRelatedProjectRepository;
         private readonly IUserRelatedTaskRepository _userRelatedTaskRepository;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
+     
 
         public TaskService(
             ITaskRepository taskRepository,
             ITaskRelatedProjectRepository taskRelatedProjectRepository,
             IUserRelatedTaskRepository userRelatedTaskRepository,
-            IMapper mapper)
+            IMapper mapper,IMemoryCache cache)
         {
             _taskRepository = taskRepository;
             _taskRelatedProjectRepository = taskRelatedProjectRepository;
             _userRelatedTaskRepository = userRelatedTaskRepository;
             _mapper = mapper;
+            _cache = cache;
+        }
+
+
+        //private method than eluthanum cache
+
+        private List<data.Entities.Task> GetCachedTasks() {
+
+            const string cacheKey = "AllTasks";
+
+            if (!_cache.TryGetValue(cacheKey, out List<data.Entities.Task> cachedTasks)) {
+
+                var tasks = _taskRepository.GetAll();
+                cachedTasks = tasks;
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
+                _cache.Set(cacheKey, cachedTasks, cacheEntryOptions);
+
+            }
+
+            return cachedTasks;
+        
+        }
+
+        //invalidate pandratukku data change ahagumbothu
+
+        private void InvalidateTaskCache()
+        {
+            _cache.Remove("AllTasks");
         }
 
         public ResponseCreateTaskDto AddTask(CreateTaskDto dto)
@@ -49,6 +81,8 @@ namespace task_management_app_backend.services.Services
                 ProjectId = dto.ProjectId
             });
 
+            _cache.Remove("AllTasks");
+
             var result = _mapper.Map<ResponseCreateTaskDto>(newTask);
             result.EmployeeId = dto.EmployeeId;
             result.ProjectId = dto.ProjectId;
@@ -59,7 +93,7 @@ namespace task_management_app_backend.services.Services
 
         public List<ResponseCreateTaskDto> GetAllTasks()
         {
-            var tasks = _taskRepository.GetAll();
+            var tasks = GetCachedTasks();
             var result = _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
             return (result);
         }
@@ -71,12 +105,13 @@ namespace task_management_app_backend.services.Services
                 throw new Exception("Task not found");
 
             task.IsCompleted = 1;
+            _cache.Remove("AllTasks");
             return _taskRepository.Update(task);
         }
 
         public List<ResponseCreateTaskDto> GetCompletedTasks(int n)
         {
-            var tasks = _taskRepository.GetAll().Where(t => t.IsCompleted == n).ToList();
+            var tasks = GetCachedTasks().Where(t => t.IsCompleted == n).ToList();
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
 
@@ -85,12 +120,25 @@ namespace task_management_app_backend.services.Services
             var today = DateTime.UtcNow.Date;
             var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
 
-            var tasks = _taskRepository.GetAll()
+            var tasks = GetCachedTasks()
                 .Where(t => t.DueDate.Date >= today && t.DueDate.Date <= endOfWeek && t.IsCompleted != 1)
                 .ToList();
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
+
+        public List<ResponseCreateTaskDto> GetDueTasks()
+        {
+            var today = DateTime.UtcNow.Date;
+           // var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
+
+            var tasks = GetCachedTasks()
+                .Where(t => t.DueDate.Date < today && t.IsCompleted != 1)
+                .ToList();
+
+            return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+        }
+
         public async Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto)
         {
             var task = _taskRepository.GetElementById(dto.ID);
@@ -143,6 +191,8 @@ namespace task_management_app_backend.services.Services
                 ProjectId = dto.ProjectId
             });
 
+            _cache.Remove("AllTasks");
+
 
             var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
             result.EmployeeId = dto.EmployeeId;
@@ -174,10 +224,110 @@ namespace task_management_app_backend.services.Services
                 _taskRelatedProjectRepository.Delete(projectRelation);
             }
 
+            _cache.Remove("AllTasks");
+
             // Delete Task
             return _taskRepository.Delete(task);
         }
 
+        public List<ResponseCreateTaskDto> getTimeOne() {
+            var today = DateTime.UtcNow.Date;
+            // var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
 
+            var tasks =  GetCachedTasks()
+                .Where(t => t.DueDate.Date >= today && t.IsCompleted != 1)
+                .ToList();
+
+            return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
+
+        }
+
+        public EmployeeTasks employeeTasksService(Guid id)
+        {
+            var userTasks = _userRelatedTaskRepository.employeeReleatedTasks(id);
+
+            var completedTasks = userTasks
+                .Where(ut => ut.Task != null && ut.Task.IsCompleted == 1)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            var timeHavingTasks = userTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate > DateTime.Now)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                   
+                })
+                .ToList();
+
+            var dueTasks = userTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate <= DateTime.Now && ut.Task.IsCompleted == 0)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            return new EmployeeTasks
+            {
+                completedTasks = completedTasks,
+                timeHavingTasks = timeHavingTasks,
+                dueTasks = dueTasks
+            };
+        }
+
+        public ResponseCreateTaskDto getTaskByIdService(Guid id) {
+
+            var tasks = _taskRepository.GetOne(id);
+            var result = _mapper.Map<ResponseCreateTaskDto>(tasks);
+            return (result);
+
+
+        }
+
+        public ProjectTasks projectTaskService(Guid id) {
+            var projectTasks = _taskRelatedProjectRepository.projectReleatedTasks(id);
+
+            var completedTasks = projectTasks
+                .Where(ut => ut.Task != null && ut.Task.IsCompleted == 1)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            var timeHavingTasks = projectTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate > DateTime.Now)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+
+                })
+                .ToList();
+
+            var dueTasks = projectTasks
+                .Where(ut => ut.Task != null && ut.Task.DueDate <= DateTime.Now && ut.Task.IsCompleted == 0)
+                .Select(ut => new CompletedTasks
+                {
+                    taskId = ut.Task.ID,
+                    taskName = ut.Task.Title
+                })
+                .ToList();
+
+            return new ProjectTasks
+            {
+                completedTasks = completedTasks,
+                timeHavingTasks = timeHavingTasks,
+                dueTasks = dueTasks
+            };
+        }
     }
 }

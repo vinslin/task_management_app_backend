@@ -39,6 +39,7 @@ builder.Services.AddControllers()
         config.RegisterValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>();
     });
 
+
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -58,6 +59,8 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
+//chache services
+builder.Services.AddMemoryCache();
 // ----------------------------------
 // API Versioning
 // ----------------------------------

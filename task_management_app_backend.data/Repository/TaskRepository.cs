@@ -63,6 +63,17 @@ namespace task_management_app_backend.data.Repository
             return task;
         }
 
+        public Entities.Task? GetOne(Guid id)
+        {
+            return _context.Tasks
+                .Include(t => t.TaskProjects)
+                    .ThenInclude(tp => tp.Project)
+                .Include(t => t.UserTasks)
+                    .ThenInclude(ut => ut.Employee)
+                .FirstOrDefault(t => t.ID == id); // Fetch task by ID
+        }
+
+
 
     }
 }

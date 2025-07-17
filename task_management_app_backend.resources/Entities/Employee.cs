@@ -15,8 +15,8 @@ namespace task_management_app_backend.data.Entities
 
         public string? UpdatedBy { get; set; }
         public string? CreatedBy { get; set; }
-
         // Many-to-many: one employee assigned to many tasks
+
         public ICollection<UserReleatedTask> UserTasks { get; set; } = new List<UserReleatedTask>();
 
         public void SetUpdated() => UpdatedAt = DateTime.UtcNow;

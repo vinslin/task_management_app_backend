@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using task_management_app_backend.data.Entities;
-using task_management_app_backend.data.Data;
+
 
 namespace task_management_app_backend.data.IRepository
 {
@@ -16,5 +12,7 @@ namespace task_management_app_backend.data.IRepository
 
         public List<TaskRelatedProject> GetAll();
         public bool Delete(TaskRelatedProject relation);
+
+        public List<TaskRelatedProject> projectReleatedTasks(Guid id);
     }
 }

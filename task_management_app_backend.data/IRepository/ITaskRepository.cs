@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using task_management_app_backend.data.Entities;
-
+﻿
 
 namespace task_management_app_backend.data.IRepository
 {
@@ -20,6 +14,8 @@ namespace task_management_app_backend.data.IRepository
 
         data.Entities.Task Update(data.Entities.Task task);
         Entities.Task Delete(Entities.Task task);
+
+        public Entities.Task? GetOne(Guid id);
 
 
     }

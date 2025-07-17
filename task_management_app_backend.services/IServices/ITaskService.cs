@@ -22,6 +22,16 @@ namespace task_management_app_backend.services.IServices
 
         data.Entities.Task DeleteTask(Guid id);
 
+        List<ResponseCreateTaskDto> GetDueTasks();
+
+        List<ResponseCreateTaskDto> getTimeOne();
+
+        EmployeeTasks employeeTasksService(Guid id);
+
+        ResponseCreateTaskDto getTaskByIdService(Guid id);
+
+        ProjectTasks projectTaskService(Guid id);
+
     }
 
 
