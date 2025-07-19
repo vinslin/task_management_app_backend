@@ -39,6 +39,7 @@ namespace task_management_app_backend.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpGet("getcompletedtasks")]
         public async Task<IActionResult> GetCompletedTasks()
         {
@@ -46,6 +47,7 @@ namespace task_management_app_backend.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpGet("getincompletedtasks")]
         public async Task<IActionResult> GetInCompletedTasks()
         {
@@ -53,7 +55,7 @@ namespace task_management_app_backend.Controllers
             return Ok(result);
         }
 
-
+        [Authorize(Roles = "Manager,Director")]
         [HttpPatch("Complete_Tasks/{id:Guid}")]
 
         public async Task<IActionResult> CompleteTask(Guid id)
@@ -67,7 +69,7 @@ namespace task_management_app_backend.Controllers
         }
 
 
-
+        [Authorize(Roles = "Manager,Director")]
         [HttpGet("TaskDueThisWeek")]
 
         public async Task<IActionResult> DueThisWeek()
@@ -80,7 +82,7 @@ namespace task_management_app_backend.Controllers
                 return Ok(result);
         }
 
-
+        [Authorize(Roles = "Manager,Director")]
         [HttpPut("UpdateTask")]
         public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskDto dto)
         {
@@ -94,6 +96,7 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
         [Authorize(Roles = "Director,Manager")]
         [HttpDelete("deleteTask/{id}")]
         public async Task<IActionResult> DeleteTask(Guid id)
@@ -108,6 +111,7 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
         [Authorize(Roles = "Director")]
         [HttpGet("getduetasks")]
         public async Task<IActionResult> dueTask()
@@ -122,6 +126,8 @@ namespace task_management_app_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize(Roles = "Director")]
         [Authorize(Roles = "Director")]
         [HttpGet("gettimehavingtasks")]
         public async Task<IActionResult> getTimeHavingTask()

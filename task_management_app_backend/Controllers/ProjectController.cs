@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using task_management_app_backend.resources.Dtos.RequestDto;
 using task_management_app_backend.services.IServices;
@@ -6,6 +7,8 @@ using task_management_app_backend.services.Services;
 
 namespace task_management_app_backend.api.Controllers
 {
+
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class ProjectController : ControllerBase
@@ -19,6 +22,7 @@ namespace task_management_app_backend.api.Controllers
             _projectService = projectService;
         }
 
+        [Authorize(Roles = "Manager,Director")]
         [HttpGet]
 
         public async Task<IActionResult> GetAllProjects()
@@ -27,6 +31,7 @@ namespace task_management_app_backend.api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Manager,Director")]
         [HttpPost]
         public async Task<IActionResult> AddProjects(CreateProjectDto dto)
         {
@@ -34,6 +39,7 @@ namespace task_management_app_backend.api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Manager,Director")]
         [HttpPut("UpdateProject/{id:guid}")]
         public async Task<IActionResult> UpdateProject(Guid id, CreateProjectDto dto)
         {
@@ -42,6 +48,7 @@ namespace task_management_app_backend.api.Controllers
 
         }
 
+        [Authorize(Roles = "Manager,Director")]
         [HttpDelete("deleteProject/{id:guid}")]
         public async Task<IActionResult> DeleteProject(Guid id)
         {
@@ -50,6 +57,8 @@ namespace task_management_app_backend.api.Controllers
 
         }
 
+
+        [Authorize(Roles = "Manager,Director")]
         [HttpGet("Getprojectforscroller")]
         public async Task<IActionResult> GetProjectForScrollBar()
         {
@@ -59,6 +68,8 @@ namespace task_management_app_backend.api.Controllers
 
         }
 
+
+        [Authorize(Roles = "Director")]
         [HttpGet("getoneproject/{id:guid}")]
         public async Task<IActionResult> getOneProject(Guid id)
         {
