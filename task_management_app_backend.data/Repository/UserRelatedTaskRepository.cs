@@ -1,57 +1,55 @@
-﻿using Microsoft.EntityFrameworkCore;
-using task_management_app_backend.data.Data;
-using task_management_app_backend.data.Entities;
+﻿    using Microsoft.EntityFrameworkCore;
+    using task_management_app_backend.data.Data;
+    using task_management_app_backend.data.Entities;
 
-using task_management_app_backend.data.IRepository;
-namespace task_management_app_backend.data.Repository
-{
-    public class UserRelatedTaskRepository : IUserRelatedTaskRepository
+    using task_management_app_backend.data.IRepository;
+    namespace task_management_app_backend.data.Repository
     {
-        private readonly ApplicationDbContext _context;
-        public UserRelatedTaskRepository(ApplicationDbContext context)
+        public class UserRelatedTaskRepository : IUserRelatedTaskRepository
         {
-            _context = context;
-        }
-        public bool Add(UserReleatedTask task)
-        {
-            var task1 = new UserReleatedTask
+            private readonly ApplicationDbContext _context;
+            public UserRelatedTaskRepository(ApplicationDbContext context)
             {
-                EmployeeId = task.EmployeeId,
-                TaskId = task.TaskId,
+                _context = context;
+            }
 
-            };
-            _context.userReleatedTasks.Add(task1);
-            _context.SaveChanges();
-            return true;
+            public async Task<bool> AddAsync(UserReleatedTask task)
+            {
+                var task1 = new UserReleatedTask
+                {
+                    EmployeeId = task.EmployeeId,
+                    TaskId = task.TaskId,
+                };
+                await _context.userReleatedTasks.AddAsync(task1);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            public async Task<UserReleatedTask> UpdateAsync(UserReleatedTask task)
+            {
+                var result = _context.userReleatedTasks.Update(task);
+                await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+
+            public async Task<List<UserReleatedTask>> GetAllAsync()
+            {
+                return await _context.userReleatedTasks.ToListAsync();
+            }
+
+            public async Task<bool> DeleteAsync(UserReleatedTask relation)
+            {
+                _context.userReleatedTasks.Remove(relation);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            public async Task<List<UserReleatedTask>> EmployeeReleatedTasksAsync(Guid id)
+            {
+                return await _context.userReleatedTasks
+                    .Where(ut => ut.EmployeeId == id)
+                    .Include(ut => ut.Task)
+                    .ToListAsync();
+            }
         }
-        public UserReleatedTask Update(UserReleatedTask task)
-        {
-            var result = _context.userReleatedTasks.Update(task);
-            _context.SaveChanges();
-            return result.Entity;
-        }
-        public List<UserReleatedTask> GetAll()
-        {
-            return _context.userReleatedTasks.ToList();
-        }
-
-        public bool Delete(UserReleatedTask relation)
-        {
-            _context.userReleatedTasks.Remove(relation);
-            _context.SaveChanges();
-            return true;
-        }
-
-
-        public List<UserReleatedTask> employeeReleatedTasks(Guid id)
-        {
-            return _context.userReleatedTasks
-                .Where(ut => ut.EmployeeId == id)
-                .Include(ut => ut.Task)  // Include related task details
-                .ToList();
-        }
-
-
-
     }
-}

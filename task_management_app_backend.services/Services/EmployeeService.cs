@@ -1,85 +1,78 @@
-﻿using AutoMapper;
-using task_management_app_backend.data.Entities;
-using task_management_app_backend.data.IRepository;
-using task_management_app_backend.resources.Dtos.RequestDto;
-using task_management_app_backend.resources.Dtos.ResponseDto;
-using task_management_app_backend.services.IServices;
+﻿    using AutoMapper;
+    using task_management_app_backend.data.Entities;
+    using task_management_app_backend.data.IRepository;
+    using task_management_app_backend.resources.Dtos.RequestDto;
+    using task_management_app_backend.resources.Dtos.ResponseDto;
+    using task_management_app_backend.services.IServices;
 
-namespace task_management_app_backend.services.Services
-{
-    public class EmployeeService : IEmployeeService
+    namespace task_management_app_backend.services.Services
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IMapper _mapper;
-
-        public EmployeeService(IEmployeeRepository employeeRepository, IMapper mapper)
+        public class EmployeeService : IEmployeeService
         {
-            _employeeRepository = employeeRepository;
-            _mapper = mapper;
-        }
+            private readonly IEmployeeRepository _employeeRepository;
+            private readonly IMapper _mapper;
 
-        public Employee AddEmployeeAsync(CreateEmployeeDto createDto)
-        {
-            var employee = _mapper.Map<Employee>(createDto);
-            employee.ID = Guid.NewGuid();
-            employee.CreatedAt = DateTime.UtcNow;
-            employee.UpdatedAt = DateTime.UtcNow;
+            public EmployeeService(IEmployeeRepository employeeRepository, IMapper mapper)
+            {
+                _employeeRepository = employeeRepository;
+                _mapper = mapper;
+            }
 
-            return _employeeRepository.AddEmployee(employee);
-        }
-         
-        public List<Employee> GetAllEmployee()
-        {
-            return _employeeRepository.GetAll();
-        }
+            public async Task<Employee> AddEmployeeAsync(CreateEmployeeDto createDto)
+            {
+                var employee = _mapper.Map<Employee>(createDto);
+                employee.ID = Guid.NewGuid();
+                employee.CreatedAt = DateTime.UtcNow;
+                employee.UpdatedAt = DateTime.UtcNow;
 
-        public Employee UpdateEmployee(Guid id, CreateEmployeeDto dto)
-        {
-            var employee = _employeeRepository.GetElementById(id);
-            if (employee == null)
-                throw new KeyNotFoundException($"Employee with ID {id} not found.");
+                return await _employeeRepository.AddEmployeeAsync(employee);
+            }
 
-            // You can also do _mapper.Map(dto, employee) if you prefer full mapping
-            employee.Name = dto.UserName;
-            employee.Email = dto.Email;
-            employee.Role = dto.Role;
-            employee.UpdatedAt = DateTime.UtcNow;
+            public async Task<List<Employee>> GetAllEmployeeAsync()
+            {
+                return await _employeeRepository.GetAllAsync();
+            }
 
-            return _employeeRepository.Update(employee);
-        }
+            public async Task<Employee> UpdateEmployeeAsync(Guid id, CreateEmployeeDto dto)
+            {
+                var employee = await _employeeRepository.GetElementByIdAsync(id);
+                if (employee == null)
+                    throw new KeyNotFoundException($"Employee with ID {id} not found.");
 
-        public List<ResponseCreateTaskDto> GetEmployeeTasks(Guid id)
-        {
-            var employee = _employeeRepository.GetElementById(id);
-            if (employee == null)
-                throw new KeyNotFoundException($"Employee with ID {id} not found.");
+                employee.Name = dto.UserName;
+                employee.Email = dto.Email;
+                employee.Role = dto.Role;
+                employee.UpdatedAt = DateTime.UtcNow;
 
-            return _mapper.Map<List<ResponseCreateTaskDto>>(employee.UserTasks.Select(ut => ut.Task).ToList());
-        }
+                return await _employeeRepository.UpdateAsync(employee);
+            }
 
-        public bool deleteEmployee(Guid id)
-        {
-           // var employee = _employeeRepository.GetElementById(id);
-            //if (employee == null)
-              //  throw new KeyNotFoundException($"Employee with ID {id} not found.");
+            public async Task<List<ResponseCreateTaskDto>> GetEmployeeTasksAsync(Guid id)
+            {
+                var employee = await _employeeRepository.GetElementByIdAsync(id);
+                if (employee == null)
+                    throw new KeyNotFoundException($"Employee with ID {id} not found.");
 
-                return _employeeRepository.DeleteEmployee(id);
-            
-             
-        }
+                return _mapper.Map<List<ResponseCreateTaskDto>>(employee.UserTasks.Select(ut => ut.Task).ToList());
+            }
 
-        public List<getEmployeeScrollBarDto> getEmployeeScroll() {
+            public async Task<bool> DeleteEmployeeAsync(Guid id)
+            {
+                return await _employeeRepository.DeleteEmployeeAsync(id);
+            }
 
-            return _employeeRepository.getEmpScroll();
-            
-        }
+            public async Task<List<getEmployeeScrollBarDto>> GetEmployeeScrollAsync()
+            {
+                return await _employeeRepository.GetEmpScrollAsync();
+            }
 
-        public Employee getEmployee(Guid id) {
-            var employee = _employeeRepository.GetElementById(id);
-            if (employee == null)
-                throw new KeyNotFoundException($"Employee with ID {id} not found.");
+            public async Task<Employee> GetEmployeeAsync(Guid id)
+            {
+                var employee = await _employeeRepository.GetElementByIdAsync(id);
+                if (employee == null)
+                    throw new KeyNotFoundException($"Employee with ID {id} not found.");
 
-            return employee;
+                return employee;
+            }
         }
     }
-}

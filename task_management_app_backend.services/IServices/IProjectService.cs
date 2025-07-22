@@ -10,18 +10,12 @@ namespace task_management_app_backend.services.IServices
 {
     public interface IProjectService
     {
-
-        public Project AddProject(CreateProjectDto projectDto);
-        public List<Project> GetAllProjects();
-        public Project UpdateProject(Guid id , CreateProjectDto project);
-        public Project GetProjectById(Guid id);
-
-        public bool deleteProject(Guid id);
-
-        public List<getProjectsScrollbarDto> getProjectScroll();
-
-        public Project getOneProject(Guid id);
-
-
+        Task<Project> AddProjectAsync(CreateProjectDto projectDto);
+        Task<List<Project>> GetAllProjectsAsync();
+        Task<Project> UpdateProjectAsync(Guid id, CreateProjectDto project);
+        Task<Project> GetProjectByIdAsync(Guid id);
+        Task<bool> DeleteProjectAsync(Guid id);
+        Task<List<getProjectsScrollbarDto>> GetProjectScrollAsync();
+        Task<Project> GetOneProjectAsync(Guid id);
     }
 }

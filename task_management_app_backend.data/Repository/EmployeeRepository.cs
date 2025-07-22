@@ -15,60 +15,55 @@ namespace task_management_app_backend.data.Repository
             _context = context;
         }
 
-        public Employee AddEmployee(Employee employee)
+        public async Task<Employee> AddEmployeeAsync(Employee employee)
         {
             employee.ID = Guid.NewGuid();
             employee.CreatedAt = DateTime.UtcNow;
 
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
 
             return employee;
         }
 
-        public List<Employee> GetAll()
+        public async Task<List<Employee>> GetAllAsync()
         {
-            return _context.Employees.ToList();
+            return await _context.Employees.ToListAsync();
         }
 
-        public Employee Update(Employee employee)
+        public async Task<Employee> UpdateAsync(Employee employee)
         {
             var result = _context.Employees.Update(employee);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return result.Entity;
         }
 
-        public Employee GetElementById(Guid id)
+        public async Task<Employee?> GetElementByIdAsync(Guid id)
         {
-            return _context.Employees.FirstOrDefault(e => e.ID == id);
+            return await _context.Employees.FirstOrDefaultAsync(e => e.ID == id);
         }
 
-
-
-        public bool DeleteEmployee(Guid id)
+        public async Task<bool> DeleteEmployeeAsync(Guid id)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.ID == id);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.ID == id);
 
             if (employee == null)
                 return false;
 
             _context.Employees.Remove(employee);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public List<getEmployeeScrollBarDto> getEmpScroll() {
-
-            return _context.Employees
+        public async Task<List<getEmployeeScrollBarDto>> GetEmpScrollAsync()
+        {
+            return await _context.Employees
                .Select(e => new getEmployeeScrollBarDto
                {
                    Id = e.ID,
                    Name = e.Name
                })
-               .ToList();
-
-
+               .ToListAsync();
         }
-
-    }
+    }   
 }

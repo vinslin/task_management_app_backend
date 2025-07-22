@@ -6,8 +6,8 @@ namespace task_management_app_backend.services.IServices
     {
 
 
-        public bool Register(CreateUserDto newUser);
+        public Task<bool> RegisterAsync(CreateUserDto newUser);
 
-        public LoginResponseDto Login(LoginRequestDto loginRequest);
+        public Task<LoginResponseDto> LoginAsync(LoginRequestDto loginRequest);
     }
 }

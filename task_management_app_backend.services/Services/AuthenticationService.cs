@@ -23,10 +23,10 @@ namespace task_management_app_backend.services.Services
             _userRepository = userRepository;
         }
 
-        public bool Register(CreateUserDto newUser)
+        public async Task<bool> RegisterAsync(CreateUserDto newUser)
         {
             // Check if user already exists
-            var existingUser = _userRepository.GetUser(newUser.email);
+            var existingUser = await _userRepository.GetUserAsync(newUser.email);
             if (existingUser != null)
             {
                 throw new InvalidOperationException("User with this email already exists.");
@@ -42,12 +42,12 @@ namespace task_management_app_backend.services.Services
                 Role = newUser.role
             };
 
-            return _userRepository.Add(user);
+            return await _userRepository.AddAsync(user);
         }
 
-        public LoginResponseDto Login(LoginRequestDto loginRequest)
+        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto loginRequest)
         {
-            var user = _userRepository.GetUser(loginRequest.Email);
+            var user = await _userRepository.GetUserAsync(loginRequest.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash))
             {
                 throw new UnauthorizedAccessException("Invalid email or password.");
@@ -68,9 +68,9 @@ namespace task_management_app_backend.services.Services
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
+                };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -83,7 +83,7 @@ namespace task_management_app_backend.services.Services
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token); 
         }
     }
 }

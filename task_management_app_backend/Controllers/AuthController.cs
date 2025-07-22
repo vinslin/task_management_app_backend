@@ -17,16 +17,16 @@ namespace task_management_app_backend.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register(CreateUserDto dto)
+        public async Task<IActionResult> Register(CreateUserDto dto)
         {
-            var result = _authService.Register(dto);
+            var result = await _authService.RegisterAsync(dto);
             return Ok(result);
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(LoginRequestDto dto)
+        public async Task<IActionResult> Login(LoginRequestDto dto)
         {
-            var result = _authService.Login(dto);
+            var result = await _authService.LoginAsync(dto);
             return Ok(result);
         }
     }

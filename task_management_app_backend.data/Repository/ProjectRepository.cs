@@ -15,56 +15,54 @@ namespace task_management_app_backend.data.Repository
             _context = context;
         }
 
-        public Project Add(Project project)
+        public async Task<Project> AddAsync(Project project)
         {
             project.Id = Guid.NewGuid();
             project.CreatedAt = DateTime.UtcNow;
 
-            _context.Projects.Add(project);
-            _context.SaveChanges();
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
             return project;
         }
 
-        public List<Project> GetAll()
+        public async Task<List<Project>> GetAllAsync()
         {
-            return _context.Projects.ToList();
+            return await _context.Projects.ToListAsync();
         }
 
-        public Project Update(Project project)
+        public async Task<Project> UpdateAsync(Project project)
         {
             var result = _context.Projects.Update(project);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return result.Entity;
         }
 
-        public Project GetProjectById(Guid id)
+        public async Task<Project?> GetProjectByIdAsync(Guid id)
         {
-            return _context.Projects.FirstOrDefault(p => p.Id == id);
+            return await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public bool DeletePro(Guid id) {
-
-            var project = _context.Projects.FirstOrDefault(p => p.Id == id);
+        public async Task<bool> DeleteProAsync(Guid id)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
 
             if (project == null)
                 return false;
 
             _context.Projects.Remove(project);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public List<getProjectsScrollbarDto> getProScroll()
+        public async Task<List<getProjectsScrollbarDto>> GetProScrollAsync()
         {
-
-            return _context.Projects
+            return await _context.Projects
                .Select(e => new getProjectsScrollbarDto
                {
                    Id = e.Id,
                    Name = e.Name
                })
-               .ToList();
-
+               .ToListAsync();
         }
     }
 }

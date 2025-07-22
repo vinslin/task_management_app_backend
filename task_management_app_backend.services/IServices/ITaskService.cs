@@ -7,31 +7,20 @@ namespace task_management_app_backend.services.IServices
 
 
   
-        public interface ITaskService
-        {
-            ResponseCreateTaskDto AddTask(CreateTaskDto dto);
-           // List<ResponseCreateTaskDto> UpdateTask();
-
-        List<ResponseCreateTaskDto> GetAllTasks();
-
-        data.Entities.Task CompleteTask(Guid id);
-        List<ResponseCreateTaskDto> GetCompletedTasks(int n);
-
-        List<ResponseCreateTaskDto> GetTasksDueThisWeek();
-        Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto);
-
-        data.Entities.Task DeleteTask(Guid id);
-
-        List<ResponseCreateTaskDto> GetDueTasks();
-
-        List<ResponseCreateTaskDto> getTimeOne();
-
-        EmployeeTasks employeeTasksService(Guid id);
-
-        ResponseCreateTaskDto getTaskByIdService(Guid id);
-
-        ProjectTasks projectTaskService(Guid id);
-
+public interface ITaskService
+    {
+        Task<ResponseCreateTaskDto> AddTaskAsync(CreateTaskDto dto);
+        Task<List<ResponseCreateTaskDto>> GetAllTasksAsync();
+        Task<data.Entities.Task> CompleteTaskAsync(Guid id);
+        Task<List<ResponseCreateTaskDto>> GetCompletedTasksAsync(int n);
+        Task<List<ResponseCreateTaskDto>> GetTasksDueThisWeekAsync();
+        Task<ResponseCreateTaskDto> UpdateTaskAsync(UpdateTaskDto dto);
+        Task<data.Entities.Task> DeleteTaskAsync(Guid id);
+        Task<List<ResponseCreateTaskDto>> GetDueTasksAsync();
+        Task<List<ResponseCreateTaskDto>> GetTimeOneAsync();
+        Task<EmployeeTasks> EmployeeTasksServiceAsync(Guid id);
+        Task<ResponseCreateTaskDto> GetTaskByIdServiceAsync(Guid id);
+        Task<ProjectTasks> ProjectTaskServiceAsync(Guid id);
     }
 
 

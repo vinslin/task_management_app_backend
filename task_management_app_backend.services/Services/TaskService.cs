@@ -1,15 +1,15 @@
-﻿using AutoMapper;
-using task_management_app_backend.data.Entities;
-using task_management_app_backend.data.Enums;
-using task_management_app_backend.data.IRepository;
-using task_management_app_backend.resources.Dtos.MiddleDto;
-using task_management_app_backend.resources.Dtos.RequestDto;
-using task_management_app_backend.resources.Dtos.ResponseDto;
-using task_management_app_backend.services.IServices;
-using Microsoft.Extensions.Caching.Memory;
+﻿        using AutoMapper;
+        using task_management_app_backend.data.Entities;
+        using task_management_app_backend.data.Enums;
+        using task_management_app_backend.data.IRepository;
+        using task_management_app_backend.resources.Dtos.MiddleDto;
+        using task_management_app_backend.resources.Dtos.RequestDto;
+        using task_management_app_backend.resources.Dtos.ResponseDto;
+        using task_management_app_backend.services.IServices;
+        using Microsoft.Extensions.Caching.Memory;
 
-namespace task_management_app_backend.services.Services
-{
+        namespace task_management_app_backend.services.Services
+        {
     public class TaskService : ITaskService
     {
         private readonly ITaskRepository _taskRepository;
@@ -17,13 +17,12 @@ namespace task_management_app_backend.services.Services
         private readonly IUserRelatedTaskRepository _userRelatedTaskRepository;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
-     
 
         public TaskService(
             ITaskRepository taskRepository,
             ITaskRelatedProjectRepository taskRelatedProjectRepository,
             IUserRelatedTaskRepository userRelatedTaskRepository,
-            IMapper mapper,IMemoryCache cache)
+            IMapper mapper, IMemoryCache cache)
         {
             _taskRepository = taskRepository;
             _taskRelatedProjectRepository = taskRelatedProjectRepository;
@@ -32,56 +31,48 @@ namespace task_management_app_backend.services.Services
             _cache = cache;
         }
 
-
-        //private method than eluthanum cache
-
-        private List<data.Entities.Task> GetCachedTasks() {
-
+        private async Task<List<data.Entities.Task>> GetCachedTasksAsync()
+        {
             const string cacheKey = "AllTasks";
 
-            if (!_cache.TryGetValue(cacheKey, out List<data.Entities.Task> cachedTasks)) {
-
-                var tasks = _taskRepository.GetAll();
+            if (!_cache.TryGetValue(cacheKey, out List<data.Entities.Task> cachedTasks))
+            {
+                var tasks = await _taskRepository.GetAllAsync();
                 cachedTasks = tasks;
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(10));
-
                 _cache.Set(cacheKey, cachedTasks, cacheEntryOptions);
-
             }
 
             return cachedTasks;
-        
         }
-
-        //invalidate pandratukku data change ahagumbothu
 
         private void InvalidateTaskCache()
         {
             _cache.Remove("AllTasks");
         }
 
-        public ResponseCreateTaskDto AddTask(CreateTaskDto dto)
+        public async Task<ResponseCreateTaskDto> AddTaskAsync(CreateTaskDto dto)
         {
             var task = _mapper.Map<data.Entities.Task>(dto);
             task.DueDate = DateTime.UtcNow.AddDays(dto.DaysForCompletion);
             task.CreatedAt = DateTime.UtcNow;
 
-            var newTask = _taskRepository.Add(task);
+            var newTask = await _taskRepository.AddAsync(task);
 
-            _userRelatedTaskRepository.Add(new UserReleatedTask
+            await _userRelatedTaskRepository.AddAsync(new UserReleatedTask
             {
                 EmployeeId = dto.EmployeeId,
                 TaskId = newTask.ID
             });
 
-            _taskRelatedProjectRepository.Add(new TaskRelatedProject
+            await  _taskRelatedProjectRepository.AddAsync(new TaskRelatedProject
             {
                 TaskId = newTask.ID,
                 ProjectId = dto.ProjectId
             });
 
-            _cache.Remove("AllTasks");
+            InvalidateTaskCache();
 
             var result = _mapper.Map<ResponseCreateTaskDto>(newTask);
             result.EmployeeId = dto.EmployeeId;
@@ -91,108 +82,95 @@ namespace task_management_app_backend.services.Services
             return result;
         }
 
-        public List<ResponseCreateTaskDto> GetAllTasks()
+        public async Task<List<ResponseCreateTaskDto>> GetAllTasksAsync()
         {
-            var tasks = GetCachedTasks();
+            var tasks = await GetCachedTasksAsync();
             var result = _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
-            return (result);
+            return result;
         }
 
-        public data.Entities.Task CompleteTask(Guid id)
+        public async Task<data.Entities.Task> CompleteTaskAsync(Guid id)
         {
-            var task = _taskRepository.GetElementById(id);
+            var task = await _taskRepository.GetElementByIdAsync(id);
             if (task == null)
                 throw new Exception("Task not found");
 
             task.IsCompleted = 1;
-            _cache.Remove("AllTasks");
-            return _taskRepository.Update(task);
+            InvalidateTaskCache();
+            return await _taskRepository.UpdateAsync(task);
         }
 
-        public List<ResponseCreateTaskDto> GetCompletedTasks(int n)
+        public async Task<List<ResponseCreateTaskDto>> GetCompletedTasksAsync(int n)
         {
-            var tasks = GetCachedTasks().Where(t => t.IsCompleted == n).ToList();
+            var tasks = (await GetCachedTasksAsync()).Where(t => t.IsCompleted == n).ToList();
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
 
-        public List<ResponseCreateTaskDto> GetTasksDueThisWeek()
+        public async Task<List<ResponseCreateTaskDto>> GetTasksDueThisWeekAsync()
         {
             var today = DateTime.UtcNow.Date;
             var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
 
-            var tasks = GetCachedTasks()
+            var tasks = (await GetCachedTasksAsync())
                 .Where(t => t.DueDate.Date >= today && t.DueDate.Date <= endOfWeek && t.IsCompleted != 1)
                 .ToList();
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
 
-        public List<ResponseCreateTaskDto> GetDueTasks()
+        public async Task<List<ResponseCreateTaskDto>> GetDueTasksAsync()
         {
             var today = DateTime.UtcNow.Date;
-           // var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
 
-            var tasks = GetCachedTasks()
+            var tasks = (await GetCachedTasksAsync())
                 .Where(t => t.DueDate.Date < today && t.IsCompleted != 1)
                 .ToList();
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
         }
 
-        public async Task<ResponseCreateTaskDto> UpdateTask(UpdateTaskDto dto)
+        public async Task<ResponseCreateTaskDto> UpdateTaskAsync(UpdateTaskDto dto)
         {
-            var task = _taskRepository.GetElementById(dto.ID);
+            var task = await _taskRepository.GetElementByIdAsync(dto.ID);
             if (task == null)
                 throw new Exception("Task not found");
 
-            // Update fields
             task.Title = dto.Title;
             task.Description = dto.Description;
             task.Priority = (PriorityLevel)dto.Priority;
             task.DueDate = dto.DueDate;
             task.IsCompleted = dto.IsCompleted;
-            task.SetUpdated(); // update UpdatedAt
+            task.SetUpdated();
 
-            var updatedTask = _taskRepository.Update(task);
+            var updatedTask = await _taskRepository.UpdateAsync(task);
 
-            // Update Employee
-            var userRelation = _userRelatedTaskRepository
-                .GetAll()
-                .FirstOrDefault(r => r.TaskId == task.ID);
-
+            var userRelations = await _userRelatedTaskRepository.GetAllAsync();
+            var userRelation = userRelations.FirstOrDefault(r => r.TaskId == task.ID);
             if (userRelation != null)
             {
-                // Delete old FK relation
-                _userRelatedTaskRepository.Delete(userRelation);
+                await _userRelatedTaskRepository.DeleteAsync(userRelation);
             }
 
-            // Always add the new one
-            _userRelatedTaskRepository.Add(new UserReleatedTask
+            await _userRelatedTaskRepository.AddAsync(new UserReleatedTask
             {
                 TaskId = dto.ID,
                 EmployeeId = dto.EmployeeId
             });
 
-            // Update Project
-            var projectRelation = _taskRelatedProjectRepository
-              .GetAll()
-              .FirstOrDefault(r => r.TaskId == task.ID);
-
+            var projectRelations = await _taskRelatedProjectRepository.ProjectReleatedTasksAsync(task.ID);
+            var projectRelation = projectRelations.FirstOrDefault(r => r.TaskId == task.ID);
             if (projectRelation != null)
             {
-                // Remove old FK relation
-                _taskRelatedProjectRepository.Delete(projectRelation);
+                await  _taskRelatedProjectRepository.DeleteAsync(projectRelation);
             }
 
-            // Always add the new one
-            _taskRelatedProjectRepository.Add(new TaskRelatedProject
+            await  _taskRelatedProjectRepository.AddAsync(new TaskRelatedProject
             {
                 TaskId = dto.ID,
                 ProjectId = dto.ProjectId
             });
 
-            _cache.Remove("AllTasks");
-
+            InvalidateTaskCache();
 
             var result = _mapper.Map<ResponseCreateTaskDto>(updatedTask);
             result.EmployeeId = dto.EmployeeId;
@@ -200,51 +178,46 @@ namespace task_management_app_backend.services.Services
 
             return result;
         }
-        public data.Entities.Task DeleteTask(Guid id)
+
+        public async Task<data.Entities.Task> DeleteTaskAsync(Guid id)
         {
-            var task = _taskRepository.GetElementById(id);
+            var task = await _taskRepository.GetElementByIdAsync(id);
             if (task == null)
                 throw new Exception("Task not found");
 
-            // Delete Task ↔ Employee relation
-            var userRelation = _userRelatedTaskRepository
-                .GetAll()
-                .FirstOrDefault(r => r.TaskId == id);
+            var userRelations = await _userRelatedTaskRepository.GetAllAsync();
+            var userRelation = userRelations.FirstOrDefault(r => r.TaskId == id);
             if (userRelation != null)
             {
-                _userRelatedTaskRepository.Delete(userRelation);
+                await _userRelatedTaskRepository.DeleteAsync(userRelation);
             }
 
-            // Delete Task ↔ Project relation
-            var projectRelation = _taskRelatedProjectRepository
-                .GetAll()
-                .FirstOrDefault(r => r.TaskId == id);
+            var projectRelations = await _taskRelatedProjectRepository.ProjectReleatedTasksAsync(id);
+            var projectRelation = projectRelations.FirstOrDefault(r => r.TaskId == id);
             if (projectRelation != null)
             {
-                _taskRelatedProjectRepository.Delete(projectRelation);
+                await  _taskRelatedProjectRepository.DeleteAsync(projectRelation);
             }
 
-            _cache.Remove("AllTasks");
+            InvalidateTaskCache();
 
-            // Delete Task
-            return _taskRepository.Delete(task);
+            return await _taskRepository.DeleteAsync(task);
         }
 
-        public List<ResponseCreateTaskDto> getTimeOne() {
+        public async Task<List<ResponseCreateTaskDto>> GetTimeOneAsync()
+        {
             var today = DateTime.UtcNow.Date;
-            // var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
 
-            var tasks =  GetCachedTasks()
+            var tasks = (await GetCachedTasksAsync())
                 .Where(t => t.DueDate.Date >= today && t.IsCompleted != 1)
                 .ToList();
 
             return _mapper.Map<List<ResponseCreateTaskDto>>(tasks);
-
         }
 
-        public EmployeeTasks employeeTasksService(Guid id)
+        public async Task<EmployeeTasks> EmployeeTasksServiceAsync(Guid id)
         {
-            var userTasks = _userRelatedTaskRepository.employeeReleatedTasks(id);
+            var userTasks = await _userRelatedTaskRepository.EmployeeReleatedTasksAsync(id);
 
             var completedTasks = userTasks
                 .Where(ut => ut.Task != null && ut.Task.IsCompleted == 1)
@@ -261,7 +234,6 @@ namespace task_management_app_backend.services.Services
                 {
                     taskId = ut.Task.ID,
                     taskName = ut.Task.Title
-                   
                 })
                 .ToList();
 
@@ -282,17 +254,16 @@ namespace task_management_app_backend.services.Services
             };
         }
 
-        public ResponseCreateTaskDto getTaskByIdService(Guid id) {
-
-            var tasks = _taskRepository.GetOne(id);
-            var result = _mapper.Map<ResponseCreateTaskDto>(tasks);
-            return (result);
-
-
+        public async Task<ResponseCreateTaskDto> GetTaskByIdServiceAsync(Guid id)
+        {
+            var task = await _taskRepository.GetOneAsync(id);
+            var result = _mapper.Map<ResponseCreateTaskDto>(task);
+            return result;
         }
 
-        public ProjectTasks projectTaskService(Guid id) {
-            var projectTasks = _taskRelatedProjectRepository.projectReleatedTasks(id);
+        public async Task<ProjectTasks> ProjectTaskServiceAsync(Guid id)
+        {
+            var projectTasks = await  _taskRelatedProjectRepository.ProjectReleatedTasksAsync(id);
 
             var completedTasks = projectTasks
                 .Where(ut => ut.Task != null && ut.Task.IsCompleted == 1)
@@ -309,7 +280,6 @@ namespace task_management_app_backend.services.Services
                 {
                     taskId = ut.Task.ID,
                     taskName = ut.Task.Title
-
                 })
                 .ToList();
 
@@ -330,4 +300,4 @@ namespace task_management_app_backend.services.Services
             };
         }
     }
-}
+        }

@@ -17,7 +17,7 @@ namespace task_management_app_backend.services.Services
             _projectRepository = projectRepository;
         }
 
-        public Project AddProject(CreateProjectDto projectDto)
+        public async Task<Project> AddProjectAsync(CreateProjectDto projectDto)
         {
             var project = new Project
             {
@@ -26,17 +26,17 @@ namespace task_management_app_backend.services.Services
                 // CreatedAt is handled in the repository
             };
 
-            return _projectRepository.Add(project);
+            return await _projectRepository.AddAsync(project);
         }
 
-        public List<Project> GetAllProjects()
+        public async Task<List<Project>> GetAllProjectsAsync()
         {
-            return _projectRepository.GetAll();
+            return await _projectRepository.GetAllAsync();
         }
 
-        public Project UpdateProject(Guid id, CreateProjectDto dto)
+        public async Task<Project> UpdateProjectAsync(Guid id, CreateProjectDto dto)
         {
-            var project = _projectRepository.GetProjectById(id);
+            var project = await _projectRepository.GetProjectByIdAsync(id);
             if (project == null)
             {
                 throw new KeyNotFoundException($"Project with ID {id} not found.");
@@ -46,38 +46,39 @@ namespace task_management_app_backend.services.Services
             project.Description = dto.Description;
             project.UpdatedAt = DateTime.UtcNow;
 
-            return _projectRepository.Update(project);
+            return await _projectRepository.UpdateAsync(project);
         }
 
-        public Project GetProjectById(Guid id)
+        public async Task<Project> GetProjectByIdAsync(Guid id)
         {
-            return _projectRepository.GetProjectById(id);
+            return await _projectRepository.GetProjectByIdAsync(id);
         }
 
-        public bool deleteProject(Guid id) {
-
-            var project = _projectRepository.GetProjectById(id);
+        public async Task<bool> DeleteProjectAsync(Guid id)
+        {
+            var project = await _projectRepository.GetProjectByIdAsync(id);
             if (project == null)
             {
                 throw new KeyNotFoundException($"Project with ID {id} not found.");
             }
 
-            return _projectRepository.DeletePro(id);        
+            return await _projectRepository.DeleteProAsync(id);
         }
 
-        public List<getProjectsScrollbarDto> getProjectScroll() {
-
-            return _projectRepository.getProScroll();
+        public async Task<List<getProjectsScrollbarDto>> GetProjectScrollAsync()
+        {
+            return await _projectRepository.GetProScrollAsync();
         }
-        public Project getOneProject(Guid id) {
 
-            var project = _projectRepository.GetProjectById(id);
+        public async Task<Project> GetOneProjectAsync(Guid id)
+        {
+            var project = await _projectRepository.GetProjectByIdAsync(id);
             if (project == null)
             {
                 throw new KeyNotFoundException($"Project with ID {id} not found.");
             }
 
             return project;
-        }
+        }       
     }
 }

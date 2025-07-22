@@ -7,21 +7,20 @@ using AutoMapper.Configuration.Annotations;
 
 namespace task_management_app_backend.data.Repository
 {
-    public  class AuthenticationUserRepository :IUserRepository
+    public class AuthenticationUserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
         public AuthenticationUserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
-        public bool Add(User user)
+
+        public async Task<bool> AddAsync(User user)
         {
             try
             {
-                _context.Users.Add(user);
-
-                _context.SaveChanges();
-
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -31,12 +30,9 @@ namespace task_management_app_backend.data.Repository
             }
         }
 
-        public User GetUser(string email)
+        public async Task<User> GetUserAsync(string email)
         {
-          
-                return _context.Users.FirstOrDefault(u =>  u.Email == email);
-            
-      
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

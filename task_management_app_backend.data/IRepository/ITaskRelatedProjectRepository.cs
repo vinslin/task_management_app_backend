@@ -4,15 +4,15 @@ using task_management_app_backend.data.Entities;
 
 namespace task_management_app_backend.data.IRepository
 {
-    public interface ITaskRelatedProjectRepository
+    public interface  ITaskRelatedProjectRepository
     {
-        public bool Add(TaskRelatedProject task);
-        public TaskRelatedProject Update(TaskRelatedProject task);
+        Task<bool> AddAsync(TaskRelatedProject task);
+        Task<TaskRelatedProject> UpdateAsync(TaskRelatedProject task);
         // Additional methods can be added as needed, such as GetById, GetAll, etc.
 
-        public List<TaskRelatedProject> GetAll();
-        public bool Delete(TaskRelatedProject relation);
+        Task<List<TaskRelatedProject>> GetAllAsync();
+        Task<bool> DeleteAsync(TaskRelatedProject relation);
 
-        public List<TaskRelatedProject> projectReleatedTasks(Guid id);
+        Task<List<TaskRelatedProject>> ProjectReleatedTasksAsync(Guid id);
     }
 }

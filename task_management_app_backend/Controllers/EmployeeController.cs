@@ -26,7 +26,7 @@ namespace task_management_app_backend.api.Controllers
 
         public async Task<IActionResult> GetAllEmployees()
         {
-            var result = _employeeService.GetAllEmployee();
+            var result = await _employeeService.GetAllEmployeeAsync();
             return Ok(result);
         }
 
@@ -35,7 +35,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEmployee([FromBody] CreateEmployeeDto dto)
         {
-            var result =  _employeeService.AddEmployeeAsync(dto);
+            var result = await  _employeeService.AddEmployeeAsync(dto);
             return Ok(result);
         }
 
@@ -43,7 +43,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpPut("UpdateEmployee/{id:guid}")]
         public async Task<IActionResult> UpdateEmployee(Guid id, [FromBody] CreateEmployeeDto dto)
         {
-            var result = _employeeService.UpdateEmployee(id, dto);
+            var result = await _employeeService.UpdateEmployeeAsync(id, dto);
             return Ok(result);
 
         }
@@ -52,7 +52,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpGet("GetEmployeeTasks/{id:guid}")]
         public async Task<IActionResult> GetEmployeeTasks(Guid id)
         {
-            var result = _employeeService.GetEmployeeTasks(id);
+            var result =await _employeeService.GetEmployeeTasksAsync(id);
             if (result == null)
             {
                 return NotFound($"No tasks found for employee with ID {id}.");
@@ -65,7 +65,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpDelete("deleteemployee/{id:guid}")]
         public async Task<IActionResult> deleteEmployee(Guid id)
         {
-            var result = _employeeService.deleteEmployee(id);
+            var result = await _employeeService.DeleteEmployeeAsync(id);
             if (result == false)
             {
                 return NotFound($"No employee with ID {id}.");
@@ -80,7 +80,7 @@ namespace task_management_app_backend.api.Controllers
         {
              
      
-            return Ok(_employeeService.getEmployeeScroll());
+            return Ok(await _employeeService.GetEmployeeScrollAsync());
 
         }
 
@@ -89,7 +89,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpGet("getsingleemployee/{id:guid}")]
         public async Task<IActionResult> getSingleEmployee(Guid id)
         {
-            var result = _employeeService.getEmployee(id);
+            var result = await _employeeService.GetEmployeeAsync(id);
             if (result == null)
             {
                 return NotFound($"No employee with ID {id}.");

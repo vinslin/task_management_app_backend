@@ -6,18 +6,18 @@ namespace task_management_app_backend.services.IServices
 {
     public interface IEmployeeService
     {
-        Employee AddEmployeeAsync(CreateEmployeeDto createDto);
+        Task<Employee> AddEmployeeAsync(CreateEmployeeDto createDto);
 
-        List<Employee> GetAllEmployee();
+        Task<List<Employee>> GetAllEmployeeAsync();
 
-        Employee UpdateEmployee(Guid id, CreateEmployeeDto dto);
+        Task<Employee> UpdateEmployeeAsync(Guid id, CreateEmployeeDto dto);
 
-        List<ResponseCreateTaskDto> GetEmployeeTasks(Guid id);
+        Task<List<ResponseCreateTaskDto>> GetEmployeeTasksAsync(Guid id);
 
-        bool deleteEmployee(Guid id);
+        Task<bool> DeleteEmployeeAsync(Guid id);
 
-        List<getEmployeeScrollBarDto> getEmployeeScroll();
+        Task<List<getEmployeeScrollBarDto>> GetEmployeeScrollAsync();
 
-        Employee getEmployee(Guid  id);
+        Task<Employee> GetEmployeeAsync(Guid id);
     }
 }

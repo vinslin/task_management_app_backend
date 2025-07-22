@@ -23,7 +23,7 @@ namespace task_management_app_backend.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTask(CreateTaskDto dto)
         {
-            var result = _taskService.AddTask(dto);
+            var result = await _taskService.AddTaskAsync(dto);
             return Ok(result);
         }
 
@@ -35,7 +35,7 @@ namespace task_management_app_backend.Controllers
 
         public async Task<IActionResult> GetAllTasks()
         {
-            var result = _taskService.GetAllTasks();
+            var result = await _taskService.GetAllTasksAsync();
             return Ok(result);
         }
 
@@ -43,7 +43,7 @@ namespace task_management_app_backend.Controllers
         [HttpGet("getcompletedtasks")]
         public async Task<IActionResult> GetCompletedTasks()
         {
-            var result = _taskService.GetCompletedTasks(1);
+            var result = await _taskService.GetCompletedTasksAsync(1);
             return Ok(result);
         }
 
@@ -51,7 +51,7 @@ namespace task_management_app_backend.Controllers
         [HttpGet("getincompletedtasks")]
         public async Task<IActionResult> GetInCompletedTasks()
         {
-            var result = _taskService.GetCompletedTasks(0);
+            var result =await  _taskService.GetCompletedTasksAsync(0);
             return Ok(result);
         }
 
@@ -60,7 +60,7 @@ namespace task_management_app_backend.Controllers
 
         public async Task<IActionResult> CompleteTask(Guid id)
         {
-            var result = _taskService.CompleteTask(id);
+            var result = await _taskService.CompleteTaskAsync(id);
             if (result == null)
             {
                 return NotFound($"Task with ID {id} not found.");
@@ -74,7 +74,7 @@ namespace task_management_app_backend.Controllers
 
         public async Task<IActionResult> DueThisWeek()
         {
-                var result = _taskService.GetTasksDueThisWeek();
+                var result =await  _taskService.GetTasksDueThisWeekAsync();
                 if (result == null || !result.Any())
                 {
                     return NotFound("No tasks due this week.");
@@ -88,7 +88,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.UpdateTask(dto);
+                var result = await _taskService.UpdateTaskAsync(dto);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -103,7 +103,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.DeleteTask(id);
+                var result = await _taskService.DeleteTaskAsync(id);
                 return Ok(new { message = "Task deleted successfully", taskId = result.ID });
             }
             catch (Exception ex)
@@ -118,7 +118,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.GetDueTasks();
+                var result = await _taskService.GetDueTasksAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.getTimeOne();
+                var result = await _taskService.GetTimeOneAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.employeeTasksService(id);
+                var result = await _taskService.EmployeeTasksServiceAsync(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -164,7 +164,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.getTaskByIdService(id);
+                var result = await _taskService.GetTaskByIdServiceAsync(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -179,7 +179,7 @@ namespace task_management_app_backend.Controllers
         {
             try
             {
-                var result = _taskService.projectTaskService(id);
+                var result = await _taskService.ProjectTaskServiceAsync(id);
                 return Ok(result);
             }
             catch (Exception ex)

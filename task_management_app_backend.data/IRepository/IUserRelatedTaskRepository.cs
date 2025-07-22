@@ -6,14 +6,14 @@ namespace task_management_app_backend.data.IRepository
     public interface IUserRelatedTaskRepository
     {
 
-        public bool Add(UserReleatedTask task);
-        public UserReleatedTask Update(UserReleatedTask task);
+        public Task<bool> AddAsync(UserReleatedTask task);
+        public Task<UserReleatedTask> UpdateAsync(UserReleatedTask task);
 
-        public List<UserReleatedTask> GetAll();
+        public Task<List<UserReleatedTask>> GetAllAsync();
 
-        public bool Delete(UserReleatedTask relation);
+        public Task<bool> DeleteAsync(UserReleatedTask relation);
 
-        public List<UserReleatedTask> employeeReleatedTasks(Guid id);
+        public Task<List<UserReleatedTask>> EmployeeReleatedTasksAsync(Guid id);
      
 
 

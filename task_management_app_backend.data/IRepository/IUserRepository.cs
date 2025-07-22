@@ -5,9 +5,9 @@ namespace task_management_app_backend.data.IRepository
 {
     public interface IUserRepository
     {
-        public bool Add(User user);
+        public Task<bool> AddAsync(User user);
 
-        public User GetUser(string email);
+        public Task<User> GetUserAsync(string email);
 
         
     }

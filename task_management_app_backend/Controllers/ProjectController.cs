@@ -27,7 +27,7 @@ namespace task_management_app_backend.api.Controllers
 
         public async Task<IActionResult> GetAllProjects()
         {
-            var result = _projectService.GetAllProjects();
+            var result = await _projectService.GetAllProjectsAsync();
             return Ok(result);
         }
 
@@ -35,7 +35,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProjects(CreateProjectDto dto)
         {
-            var result = _projectService.AddProject(dto);
+            var result = await _projectService.AddProjectAsync(dto);
             return Ok(result);
         }
 
@@ -43,7 +43,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpPut("UpdateProject/{id:guid}")]
         public async Task<IActionResult> UpdateProject(Guid id, CreateProjectDto dto)
         {
-            var result = _projectService.UpdateProject(id, dto);
+            var result = await _projectService.UpdateProjectAsync(id, dto);
             return Ok(result);
 
         }
@@ -52,7 +52,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpDelete("deleteProject/{id:guid}")]
         public async Task<IActionResult> DeleteProject(Guid id)
         {
-            var result = _projectService.deleteProject(id);
+            var result = await _projectService.DeleteProjectAsync(id);
             return Ok(result);
 
         }
@@ -64,7 +64,7 @@ namespace task_management_app_backend.api.Controllers
         {
 
 
-            return Ok(_projectService.getProjectScroll());
+            return Ok(await _projectService.GetProjectScrollAsync());
 
         }
 
@@ -73,7 +73,7 @@ namespace task_management_app_backend.api.Controllers
         [HttpGet("getoneproject/{id:guid}")]
         public async Task<IActionResult> getOneProject(Guid id)
         {
-            var result = _projectService.getOneProject(id);
+            var result = await _projectService.GetOneProjectAsync(id);
             return Ok(result);
 
         }

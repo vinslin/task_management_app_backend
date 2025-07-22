@@ -12,48 +12,44 @@ namespace task_management_app_backend.data.Repository
         {
             _context = context;
         }
-        public bool Add(TaskRelatedProject task)
+
+        public async Task<bool> AddAsync(TaskRelatedProject task)
         {
             var task1 = new TaskRelatedProject
             {
                 TaskId = task.TaskId,
                 ProjectId = task.ProjectId,
-         
             };
-            _context.TaskRelatedProjects.Add(task1);
-            _context.SaveChanges();
+            await _context.TaskRelatedProjects.AddAsync(task1);
+            await _context.SaveChangesAsync();
             return true;
         }
-        public TaskRelatedProject Update(TaskRelatedProject task)
+
+        public async Task<TaskRelatedProject> UpdateAsync(TaskRelatedProject task)
         {
             var result = _context.TaskRelatedProjects.Update(task);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return result.Entity;
         }
 
-        public List<TaskRelatedProject> GetAll()
+        public async Task<List<TaskRelatedProject>> GetAllAsync()
         {
-            return _context.TaskRelatedProjects.ToList();
+            return await _context.TaskRelatedProjects.ToListAsync();
         }
 
-        public bool Delete(TaskRelatedProject relation)
+        public async Task<bool> DeleteAsync(TaskRelatedProject relation)
         {
             _context.TaskRelatedProjects.Remove(relation);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public List<TaskRelatedProject> projectReleatedTasks(Guid id) { 
-
-            return _context.TaskRelatedProjects.
-                Where(pt => pt.ProjectId == id)
+        public async Task<List<TaskRelatedProject>> ProjectReleatedTasksAsync(Guid id)
+        {
+            return await _context.TaskRelatedProjects
+                .Where(pt => pt.ProjectId == id)
                 .Include(pt => pt.Task)
-                .ToList();
-
-
-
+                .ToListAsync();
         }
-
-
     }
 }

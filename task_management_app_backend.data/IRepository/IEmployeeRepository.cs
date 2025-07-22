@@ -6,16 +6,16 @@ namespace task_management_app_backend.data.IRepository
 {
     public interface IEmployeeRepository
     {
-        Employee AddEmployee(Employee employee); 
+        Task<Employee> AddEmployeeAsync(Employee employee);
 
-        List<Employee> GetAll();
+        Task<List<Employee>> GetAllAsync();
 
-        Employee Update(Employee employee);
+        Task<Employee> UpdateAsync(Employee employee);
 
-        Employee GetElementById(Guid id);
+        Task<Employee> GetElementByIdAsync(Guid id);
 
-        bool DeleteEmployee(Guid id);
+        Task<bool> DeleteEmployeeAsync(Guid id);
 
-        List<getEmployeeScrollBarDto> getEmpScroll();
+        Task<List<getEmployeeScrollBarDto>> GetEmpScrollAsync();
     }
 }

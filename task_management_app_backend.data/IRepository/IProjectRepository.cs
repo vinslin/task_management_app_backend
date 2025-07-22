@@ -5,13 +5,11 @@ namespace task_management_app_backend.data.IRepository
 {
     public interface IProjectRepository
     {
-        Project Add(Project project);
-        List<Project> GetAll();
-        Project Update(Project project);
-        Project GetProjectById(Guid id);
-
-        bool DeletePro(Guid id);
-
-        List<getProjectsScrollbarDto> getProScroll();
+        Task<Project> AddAsync(Project project);
+        Task<List<Project>> GetAllAsync();
+        Task<Project> UpdateAsync(Project project);
+        Task<Project> GetProjectByIdAsync(Guid id);
+        Task<bool> DeleteProAsync(Guid id);
+        Task<List<getProjectsScrollbarDto>> GetProScrollAsync();
     }
 }
