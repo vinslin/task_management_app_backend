@@ -56,11 +56,25 @@ namespace task_management_app_backend.Controllers
         }
 
         [Authorize(Roles = "Manager,Director")]
-        [HttpPatch("Complete_Tasks/{id:Guid}")]
+        [HttpPut("Complete_Tasks/{id:Guid}")]
 
         public async Task<IActionResult> CompleteTask(Guid id)
         {
             var result = await _taskService.CompleteTaskAsync(id);
+            if (result == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
+            return Ok(result);
+        }
+
+
+        [Authorize(Roles = "Manager,Director")]
+        [HttpPut("UnComplete_Tasks/{id:Guid}")]
+
+        public async Task<IActionResult> UnCompleteTask(Guid id)
+        {
+            var result = await _taskService.UnCompleteTaskAsync(id);
             if (result == null)
             {
                 return NotFound($"Task with ID {id} not found.");

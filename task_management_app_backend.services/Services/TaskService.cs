@@ -100,6 +100,19 @@
             return await _taskRepository.UpdateAsync(task);
         }
 
+        public async Task<data.Entities.Task> UnCompleteTaskAsync(Guid id) {
+
+            var task = await _taskRepository.GetElementByIdAsync(id);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            task.IsCompleted = 0;
+            InvalidateTaskCache();
+            return await _taskRepository.UpdateAsync(task);
+
+
+        }
+
         public async Task<List<ResponseCreateTaskDto>> GetCompletedTasksAsync(int n)
         {
             var tasks = (await GetCachedTasksAsync()).Where(t => t.IsCompleted == n).ToList();
@@ -140,7 +153,7 @@
             task.Priority = (PriorityLevel)dto.Priority;
             task.DueDate = dto.DueDate;
             task.IsCompleted = dto.IsCompleted;
-            task.SetUpdated();
+          //  task.SetUpdated();
 
             var updatedTask = await _taskRepository.UpdateAsync(task);
 
@@ -162,8 +175,8 @@
             if (projectRelation != null)
             {
                 await  _taskRelatedProjectRepository.DeleteAsync(projectRelation);
-            }
 
+            }
             await  _taskRelatedProjectRepository.AddAsync(new TaskRelatedProject
             {
                 TaskId = dto.ID,

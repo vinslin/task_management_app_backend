@@ -12,6 +12,8 @@ public interface ITaskService
         Task<ResponseCreateTaskDto> AddTaskAsync(CreateTaskDto dto);
         Task<List<ResponseCreateTaskDto>> GetAllTasksAsync();
         Task<data.Entities.Task> CompleteTaskAsync(Guid id);
+
+        Task<data.Entities.Task> UnCompleteTaskAsync(Guid id);
         Task<List<ResponseCreateTaskDto>> GetCompletedTasksAsync(int n);
         Task<List<ResponseCreateTaskDto>> GetTasksDueThisWeekAsync();
         Task<ResponseCreateTaskDto> UpdateTaskAsync(UpdateTaskDto dto);

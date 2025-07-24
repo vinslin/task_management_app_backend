@@ -15,7 +15,7 @@ namespace task_management_app_backend.resources.Dtos.Validators
                 .EmailAddress().WithMessage("Invalid email format.");
             RuleFor(x => x.Role)
                 .NotEmpty().WithMessage("Role is required.")
-                .Length(3, 20).WithMessage("Role must be between 3 and 20 characters.");
+                .Length(0, 20).WithMessage("Role must be between 0 and 20 characters.");
         }
     }
 }
