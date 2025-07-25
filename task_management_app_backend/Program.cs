@@ -15,7 +15,7 @@ using task_management_app_backend.data.Repository;
 using task_management_app_backend.resources.CQRS.Handlers;
 using task_management_app_backend.resources.Dtos.Validators;
 using task_management_app_backend.resources.Mapper;
-using task_management_app_backend.services.CQRS.Handlers;
+
 using task_management_app_backend.services.IServices;
 using task_management_app_backend.services.Services;
 //using static System.Collections.Immutable.ImmutableArray<T>;
