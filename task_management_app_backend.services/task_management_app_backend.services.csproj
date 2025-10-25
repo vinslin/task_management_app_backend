@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Quartz" Version="3.15.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\task_management_app_backend.data\task_management_app_backend.data.csproj" />
     <ProjectReference Include="..\task_management_app_backend.resources\task_management_app_backend.resources.csproj" />
   </ItemGroup>

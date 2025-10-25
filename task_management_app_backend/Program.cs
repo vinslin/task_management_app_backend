@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 using task_management_app_backend.api.Middleware;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.IRepository;
@@ -13,6 +14,7 @@ using task_management_app_backend.resources.Dtos.Validators;
 using task_management_app_backend.resources.Mapper;
 using task_management_app_backend.services.CQRS.Handlers;
 using task_management_app_backend.services.IServices;
+using task_management_app_backend.services.Jobs;
 using task_management_app_backend.services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -82,6 +84,25 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddMediatR(typeof(AddEmployeeHandler).Assembly);
+
+
+builder.Services.AddQuartz( q => 
+{
+    //Registe the job dude
+    var jobKey = new JobKey("TemporaryJob");
+    q.AddJob<TemporaryJob>(opts => opts.WithIdentity(jobKey));
+
+    //create a trigger (schedule)
+    q.AddTrigger(opts => opts
+    .ForJob(jobKey)
+    .WithIdentity("TemporaryJob-trigger")
+    .WithCronSchedule("0/10 * * * * ?"));
+    //every 10 seconds
+
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
 
 
 

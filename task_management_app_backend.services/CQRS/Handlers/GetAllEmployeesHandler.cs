@@ -4,9 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.services.CQRS.Queries;
 using task_management_app_backend.resources.Dtos.ResponseDto;
-{
-    
-}
 
 namespace task_management_app_backend.services.CQRS.Handlers
 {
