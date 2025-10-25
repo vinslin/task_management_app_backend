@@ -32,5 +32,20 @@ namespace task_management_app_backend.api.Controllers.V2
             var employees = await _mediator.Send(new GetAllEmployeesQuery());
             return Ok(employees);
         }
+
+        [HttpGet("GetEmployeeTasks/{id:guid}")]
+        public async Task<IActionResult> GetEmployeeTasks(Guid id)
+        {
+
+            var query = new GetParticularEmployeeTasksQuery(id);
+
+            var result = await _mediator.Send(query);
+            if (result == null)
+            {
+                return NotFound($"No tasks found for employee with ID .");
+            }
+            return Ok(result);
+
+        }
     }
 }

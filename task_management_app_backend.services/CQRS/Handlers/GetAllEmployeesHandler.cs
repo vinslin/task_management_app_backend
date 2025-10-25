@@ -17,10 +17,10 @@ namespace task_management_app_backend.services.CQRS.Handlers
         }
 
         public async Task<List<ResponseEmployeeDto>> Handle(GetAllEmployeesQuery request, CancellationToken cancellationToken) {
-
-            var employees = await _context.Set<ResponseEmployeeDto>()
-                .FromSqlRaw("EXEC GetAllEmployees")
+            var employees = await _context.Database
+                .SqlQuery<ResponseEmployeeDto>($"EXEC GetAllEmployees")
                 .ToListAsync();
+
 
             return employees;
 

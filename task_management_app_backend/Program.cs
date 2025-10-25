@@ -23,6 +23,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 // ----------------------------------
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularClient",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // <-- Angular dev server
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddControllers()
     .AddFluentValidation(config =>
     {
@@ -129,6 +141,7 @@ if (app.Environment.IsDevelopment())
 // ----------------------------------
 // Middlewares & Endpoint Mapping
 // ----------------------------------
+app.UseCors("AllowAngularClient");  
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 

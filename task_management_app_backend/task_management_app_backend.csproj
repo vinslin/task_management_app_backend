@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\task_management_app_backend.data\task_management_app_backend.data.csproj" />
     <ProjectReference Include="..\task_management_app_backend.resources\task_management_app_backend.resources.csproj" />
     <ProjectReference Include="..\task_management_app_backend.services\task_management_app_backend.services.csproj" />
   </ItemGroup>

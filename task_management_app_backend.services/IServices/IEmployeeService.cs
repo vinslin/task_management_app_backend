@@ -13,5 +13,9 @@ namespace task_management_app_backend.services.IServices
         Employee UpdateEmployee(Guid id, CreateEmployeeDto dto);
 
         List<ResponseCreateTaskDto> GetEmployeeTasks(Guid id);
+
+        bool deleteEmployee(Guid id);
+
+        List<getEmployeeScrollBarDto> getEmployeeScroll();
     }
 }
