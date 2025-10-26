@@ -5,10 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
+using HotChocolate.AspNetCore;
+using HotChocolate;
+using HotChocolate.Execution.Configuration;
+
 using task_management_app_backend.api.Middleware;
 using task_management_app_backend.data.Data;
 using task_management_app_backend.data.IRepository;
 using task_management_app_backend.data.Repository;
+using task_management_app_backend.GraphQL.Queries;
+using task_management_app_backend.GraphQL.Types;
 using task_management_app_backend.resources.CQRS.Handlers;
 using task_management_app_backend.resources.Dtos.Validators;
 using task_management_app_backend.resources.Mapper;
@@ -47,6 +53,14 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // Register EF DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<EmployeeQuery>()
+    .AddType<EmployeeType>()
+    .AddProjections()
+    .AddFiltering()
+    .AddSorting();
 
 // Register Repositories
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
@@ -94,7 +108,6 @@ builder.Services.AddSwaggerGen(options =>
         });
     }
 });
-
 builder.Services.AddMediatR(typeof(AddEmployeeHandler).Assembly);
 
 
@@ -119,6 +132,7 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 
 var app = builder.Build();
+app.MapGraphQL("/graphql");
 
 // Get version provider for Swagger
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
