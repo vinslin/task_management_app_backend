@@ -312,5 +312,27 @@
                 dueTasks = dueTasks
             };
         }
+
+        public async Task<GetAllTaskPaginationDto> GetAllTaskWithPaginationAsync(int pageNumber, int pageSize, string? serchString = null, string? sortBy = null, bool isAscending = true)
+        {
+            var tasks = await GetCachedTasksAsync(); // Await the task to get the list of tasks
+            var query = tasks.AsQueryable(); // Convert the list to IQueryable
+
+            if (!string.IsNullOrWhiteSpace(serchString))
+            {
+                query = query.Where(t => t.Title.Contains(serchString) || t.Description.Contains(serchString));
+            }
+            
+            // Add sorting and pagination logic here as needed
+
+            return new GetAllTaskPaginationDto
+            {
+                // Populate the DTO with the paginated and sorted data
+            };
+        }
+
+
+
+
     }
         }

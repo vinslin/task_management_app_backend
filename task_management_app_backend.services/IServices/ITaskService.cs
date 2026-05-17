@@ -11,6 +11,9 @@ public interface ITaskService
     {
         Task<ResponseCreateTaskDto> AddTaskAsync(CreateTaskDto dto);
         Task<List<ResponseCreateTaskDto>> GetAllTasksAsync();
+
+        Task<GetAllTaskPaginationDto> GetAllTaskWithPaginationAsync(int pageNumber,int pageSize,string ? serchString = null, string? sortBy = null, bool isAscending = true);
+
         Task<data.Entities.Task> CompleteTaskAsync(Guid id);
 
         Task<data.Entities.Task> UnCompleteTaskAsync(Guid id);
@@ -23,6 +26,8 @@ public interface ITaskService
         Task<EmployeeTasks> EmployeeTasksServiceAsync(Guid id);
         Task<ResponseCreateTaskDto> GetTaskByIdServiceAsync(Guid id);
         Task<ProjectTasks> ProjectTaskServiceAsync(Guid id);
+
+
     }
 
 

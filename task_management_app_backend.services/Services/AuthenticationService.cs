@@ -85,5 +85,6 @@ namespace task_management_app_backend.services.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token); 
         }
+
     }
 }
